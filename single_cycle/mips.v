@@ -1,5 +1,5 @@
-﻿`include "./DataPath/data_path.v"
-`include "./Controller/ctrl.v"
+`include "./DataPath/data_path.v"
+`include "./Controller/controller.v"
 
 module mips(clock, reset);
     input   clock;

@@ -1,33 +1,30 @@
-`include "./mips.v"
+`include "mips.v"
+`timescale 10ns/10ns
 
-module testbench();
+module test();
     reg     clock;
     reg     reset;
-
-    mips MIPS(
-        .clock(clock),
-        .reset(reset)
-    );
 
     initial 
     begin
         clock <= 1;
         reset <= 1;
         #20 reset <= 0;
-
         #60000 $stop;
     end
 
+    mips MIPS(
+        .clock(clock),
+        .reset(reset)
+    );
+
     // generate clock pluses
     always  
-    begin
-        #40 clock = ~clock; 
-    end
+        #40 clock = !clock; 
 
     initial 
     begin
         $dumpfile("wave.vcd");
         $dumpvars;    
     end
-
 endmodule

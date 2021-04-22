@@ -1,4 +1,4 @@
-﻿module alu_ctrl(funct, ALUOp, alu_ctrl_out);
+module alu_ctrl(funct, ALUOp, alu_ctrl_out);
     input       [5:0] funct;
     input       [1:0] ALUOp;
     output reg  [3:0] alu_ctrl_out;
@@ -19,9 +19,9 @@
     always @(*) 
     begin
         case(ALUOp)
-            LOAD   : alu_ctrl_out = 2'b0010;
-            SAVE   : alu_ctrl_out = 2'b0010;
-            BEQ    : alu_ctrl_out = 2'b0110;
+            LOAD   : alu_ctrl_out = 4'b0010;
+            SAVE   : alu_ctrl_out = 4'b0010;
+            BEQ    : alu_ctrl_out = 4'b0110;
             R_TYPE:
             begin
                 case(funct)
@@ -34,6 +34,4 @@
             end
         endcase    
     end
-
-
 endmodule

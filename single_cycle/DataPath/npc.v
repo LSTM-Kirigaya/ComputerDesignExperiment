@@ -1,4 +1,4 @@
-﻿module npc (PC, branch, zero, jump, Ext, jump_Addr, NPC);
+module npc (PC, branch, zero, jump, Ext, jump_Addr, NPC);
     input      [31:0]  PC;
 
     input              branch;          // whether enter branch or not  
@@ -11,16 +11,11 @@
     output reg [31:0]  NPC;
 
     always @(*)    
-    begin
         if (branch && zero)
             NPC = (Ext << 2) + PC; 
-        else    
-            begin
-                if (jump)       // different to P182, which jump iff jump == 0. Here, we do J op iff jump == 1
-                    NPC = {PC[31:28], {jump_Addr[25:0] << 2}};
-                else
-                    NPC = PC + 4;
-            end
-    end
+        else if (jump)              // different to P182, which jump iff jump == 0. Here, we do J op iff jump == 1
+            NPC = {PC[31:28], {jump_Addr[25:0] << 2}};
+        else
+            NPC = PC + 4;
 
 endmodule //npc 

@@ -1,4 +1,4 @@
-﻿module regfile(rs, rt, rd, data, RegWrite, clock, reset, out1, out2);
+module regfile(rs, rt, rd, data, RegWrite, clock, reset, out1, out2);
     input   [ 4:0]    rs, rt, rd;       // three registers
     input   [31:0]    data;             // data to write to the register
     input             clock, reset; 
@@ -10,8 +10,8 @@
     integer           i;
 
     // assign value to out
-    assign out1 <= (rs == 0) ? 0 : registers[rs];
-    assign out2 <= (rd == 0) ? 0 : registers[rd];
+    assign out1 = (rs == 0) ? 0 : registers[rs];
+    assign out2 = (rd == 0) ? 0 : registers[rd];
 
     // whether write change to register
     always @(posedge clock or negedge reset) 

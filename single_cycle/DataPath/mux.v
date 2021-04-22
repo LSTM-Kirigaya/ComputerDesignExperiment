@@ -1,14 +1,15 @@
-﻿// mux between IF and ID
+// mux between IF and ID
 module mux1(rt, rd, RegDst, DstReg);
     input      [4:0] rt;           // instr[20:16] I
     input      [4:0] rd;           // instr[15:11] R
     input            RegDst;       // signal
     output reg [4:0] DstReg;       // selected register
     
-    if (RegDst)
-        DstReg <= rd;
-    else 
-        DstReg <= rt;
+    always @(*) 
+        if (RegDst)
+            assign DstReg = rd;
+        else 
+            assign DstReg = rt;
 
 endmodule
 
@@ -20,10 +21,11 @@ module mux2(out2, Ext, ALUSrc, DstData);
     input             ALUSrc;      // signal
     output reg [31:0] DstData;     // selected data
 
-    if (ALUSrc)
-        DstData <= Ext;
-    else
-        DstData <= out2;
+    always @(*)
+        if (ALUSrc)
+            assign DstData = Ext;
+        else
+            assign DstData = out2;
 
 endmodule
 
@@ -36,9 +38,10 @@ module mux3(dm_out, alu_out, MemtoReg, WriteData);
     input              MemtoReg;    // signal
     output reg  [31:0] WriteData;   // selected data
 
-    if (MemtoReg)
-        WriteData <= dm_out;
-    else
-        WriteData <= alu_out;
+    always @(*)
+        if (MemtoReg)
+            assign WriteData = dm_out;
+        else
+            assign WriteData = alu_out;
 
 endmodule

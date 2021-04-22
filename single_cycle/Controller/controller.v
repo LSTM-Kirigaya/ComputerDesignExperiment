@@ -1,6 +1,3 @@
-﻿`define T 1'b1
-`define F 1'b0
-
 module controller(opcode, funct, RegDst, Branch, MemtoReg, ALUOp, 
     MemWrite, ALUSrc, RegWrite, Jump);
 
@@ -8,17 +5,19 @@ module controller(opcode, funct, RegDst, Branch, MemtoReg, ALUOp,
     input   [ 5: 0] funct;          
 
     // outputs are all signals
-    output          RegDst;   
-    output          Branch;
-    output          MemtoReg;
-    output  [ 1: 0] ALUOp;
-    output          MemWrite;
-    output          ALUSrc;
-    output          RegWrite;
-    output          Jump;
+    output reg         RegDst;   
+    output reg         Branch;
+    output reg         MemtoReg;
+    output reg [ 1: 0] ALUOp;
+    output reg         MemWrite;
+    output reg         ALUSrc;
+    output reg         RegWrite;
+    output reg         Jump;
 
     // for easy use 
-    `define SIGNAL {RegDst, Branch, MemtoReg, AlUSrc, AlUOp, MemWrite, RegWrite, Jump}
+    `define SIGNAL {RegDst, Branch, MemtoReg, ALUSrc, ALUOp, MemWrite, RegWrite, Jump}
+    parameter T = 1'b1;
+    parameter F = 1'b0;
 
     // opcode field
     parameter ADDI   = 6'b001000;
@@ -42,9 +41,6 @@ module controller(opcode, funct, RegDst, Branch, MemtoReg, ALUOp,
                 LW    : `SIGNAL = {F, F, T, T, 2'b00, F, T, F};
                 SW    : `SIGNAL = {F, F, F, T, 2'b00, T, F, F};
                 LUI   : `SIGNAL = {F, F, F, T, 2'b11, F, T, F};
-            endcase
-             
+            endcase    
     end
-
-
 endmodule

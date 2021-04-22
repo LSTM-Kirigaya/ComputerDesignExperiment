@@ -1,12 +1,12 @@
-﻿`include "./mips/DataPath/alu_ctrl.v"
-`include "./mips/DataPath/alu.v"
-`include "./mips/DataPath/dm.v"
-`include "./mips/DataPath/Ext.v"
-`include "./mips/DataPath/im.v"
-`include "./mips/DataPath/mux.v"
-`include "./mips/DataPath/npc.v"
-`include "./mips/DataPath/pc.v"
-`include "./mips/DataPath/regfile.v"
+`include "./DataPath/alu_ctrl.v"
+`include "./DataPath/alu.v"
+`include "./DataPath/dm.v"
+`include "./DataPath/Ext.v"
+`include "./DataPath/im.v"
+`include "./DataPath/mux.v"
+`include "./DataPath/npc.v"
+`include "./DataPath/pc.v"
+`include "./DataPath/regfile.v"
 
 module data_path(RegDst, Branch, MemtoReg, ALUOp, 
     MemWrite, ALUSrc, RegWrite, Jump, clock, reset, instruction);
@@ -34,7 +34,7 @@ module data_path(RegDst, Branch, MemtoReg, ALUOp,
     wire    [31: 0] regfile_out1;   // out1 of regfile
     wire    [31: 0] regfile_out2;   // out2 of regfile
 
-    wire    [ 5: 0] mux1_out;       // IF ID
+    wire    [ 4: 0] mux1_out;       // IF ID
     wire    [31: 0] mux2_out;       // ID EX
     wire    [31: 0] mux3_out;       // MEM WB
 
@@ -102,7 +102,7 @@ module data_path(RegDst, Branch, MemtoReg, ALUOp,
         .out2(regfile_out2),
         .Ext(ext_out),
         .ALUSrc(ALUSrc),
-        .DstData(DstData)
+        .DstData(mux2_out)
     );
 
     alu ALU(
@@ -128,7 +128,6 @@ module data_path(RegDst, Branch, MemtoReg, ALUOp,
         .alu_out(alu_out),
         .MemtoReg(MemtoReg),
         .WriteData(mux3_out)
-    )
+    );
 
- 
 endmodule

@@ -1,4 +1,4 @@
-﻿// reset or update pc
+// reset or update pc
 module pc (NPC, clock, reset, PC);
 
     input   [31:0] NPC;     // npc
