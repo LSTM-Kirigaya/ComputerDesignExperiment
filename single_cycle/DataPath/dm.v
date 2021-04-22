@@ -9,10 +9,8 @@ module dm_4k(alu_out, out2, MemWrite, clock, dm_out);
     reg [31:0] dm [1023:0];
 
     always @(posedge clock) 
-    begin
         if (MemWrite)
             dm[alu_out[11:2]] <= out2;  
-    end
 
     assign dm_out = dm[alu_out[11:2]];
 

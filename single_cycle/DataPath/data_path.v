@@ -9,7 +9,7 @@
 `include "./DataPath/regfile.v"
 
 module data_path(RegDst, Branch, MemtoReg, ALUOp, 
-    MemWrite, ALUSrc, RegWrite, Jump, clock, reset, instruction);
+    MemWrite, ALUSrc, RegWrite, Jump, Ext_op, clock, reset, instruction);
     input           RegDst;
     input           Branch;
     input           MemtoReg;
@@ -18,6 +18,7 @@ module data_path(RegDst, Branch, MemtoReg, ALUOp,
     input           ALUSrc;
     input           RegWrite;
     input           Jump;
+    input           Ext_op;
 
     input           clock;
     input           reset;
@@ -88,6 +89,7 @@ module data_path(RegDst, Branch, MemtoReg, ALUOp,
 
     Ext extension_unit(
         .input_num(instruction[15:0]),
+        .Ext_op(Ext_op),
         .output_num(ext_out) 
     );
 
@@ -108,6 +110,7 @@ module data_path(RegDst, Branch, MemtoReg, ALUOp,
     alu ALU(
         .op_num1(regfile_out1),
         .op_num2(mux2_out),
+        .shamt(instruction[10:6]),
         .alu_ctrl_out(alu_ctrl_out),
         .zero(zero),
         .alu_out(alu_out)

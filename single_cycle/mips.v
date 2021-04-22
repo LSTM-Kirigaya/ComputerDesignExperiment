@@ -16,6 +16,7 @@ module mips(clock, reset);
     wire           ALUSrc;
     wire           RegWrite;
     wire           Jump;
+    wire           Ext_op;
 
     data_path DataPath(
         .RegDst(RegDst),
@@ -26,6 +27,7 @@ module mips(clock, reset);
         .ALUSrc(ALUSrc),
         .RegWrite(RegWrite),
         .Jump(Jump),
+        .Ext_op(Ext_op),
         .clock(clock),
         .reset(reset),
         .instruction(instruction)
@@ -41,7 +43,8 @@ module mips(clock, reset);
         .MemWrite(MemWrite),
         .ALUSrc(ALUSrc),
         .RegWrite(RegWrite),
-        .Jump(Jump)
+        .Jump(Jump),
+        .Ext_op(Ext_op)
     );
     
 endmodule

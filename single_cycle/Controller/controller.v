@@ -1,5 +1,5 @@
 module controller(opcode, funct, RegDst, Branch, MemtoReg, ALUOp, 
-    MemWrite, ALUSrc, RegWrite, Jump);
+    MemWrite, ALUSrc, RegWrite, Jump, Ext_op);
 
     input   [31:26] opcode;         // 6-bit opcode, which is instr[31:26]
     input   [ 5: 0] funct;          
@@ -13,6 +13,7 @@ module controller(opcode, funct, RegDst, Branch, MemtoReg, ALUOp,
     output reg         ALUSrc;
     output reg         RegWrite;
     output reg         Jump;
+    output reg         Ext_op;
 
     // for easy use 
     `define SIGNAL {RegDst, Branch, MemtoReg, ALUSrc, ALUOp, MemWrite, RegWrite, Jump}
@@ -31,16 +32,16 @@ module controller(opcode, funct, RegDst, Branch, MemtoReg, ALUOp,
     always @(*) 
     begin
         if (opcode == 6'b000000)    // R type operation, use funct
-            `SIGNAL = {T, F, F, F, 2'b10, F, T, F};
+            `SIGNAL = {T, F, F, F, 2'b10, F, T, F, F};
         else
             case(opcode)
-                ADDI  : `SIGNAL = {F, F, F, T, 2'b00, F, T, F};
-                ADDIU : `SIGNAL = {F, F, F, T, 2'b00, F, T, F};
-                BEQ   : `SIGNAL = {F, T, F, F, 2'b01, F, F, F};
-                J     : `SIGNAL = {F, F, F, F, 2'b00, F, F, T};
-                LW    : `SIGNAL = {F, F, T, T, 2'b00, F, T, F};
-                SW    : `SIGNAL = {F, F, F, T, 2'b00, T, F, F};
-                LUI   : `SIGNAL = {F, F, F, T, 2'b11, F, T, F};
+                ADDI  : `SIGNAL = {F, F, F, T, 2'b00, F, T, F, F};
+                ADDIU : `SIGNAL = {F, F, F, T, 2'b00, F, T, F, T};
+                BEQ   : `SIGNAL = {F, T, F, F, 2'b01, F, F, F, F};
+                J     : `SIGNAL = {F, F, F, F, 2'b00, F, F, T, F};
+                LW    : `SIGNAL = {F, F, T, T, 2'b00, F, T, F, F};
+                SW    : `SIGNAL = {F, F, F, T, 2'b00, T, F, F, F};
+                LUI   : `SIGNAL = {F, F, F, T, 2'b11, F, T, F, F};
             endcase    
     end
 endmodule
