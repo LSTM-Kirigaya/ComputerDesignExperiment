@@ -22,12 +22,14 @@ loop1:          # first layer of loop
     addi    $s3, $zero, 0           # int j = 0
 
 loop2:          # second layer of loop
-    sub     $t0, $s1,   $s2    
-    sub     $t0, $t0,   1           # save n - i - 1 to $t0
+    sub     $t0, $s1,   $s2   
+    addi    $t1, $zero, 1
+    sub     $t0, $t0,   $t1         # save n - i - 1 to $t0
     slt     $t1, $s3,   $t0         # t1 == 1 if $s3(j) < $t0(n - i - 1) else t1 == 0
     beq     $t1, $zero, skip2       # if t1 == 0, which means j >= n - i - 1, we skip out loop2
 
     sll     $t2, $s3,   2           # base address shamt of v[j]
+    add     $t2, $s0,   $t2	     # base address of v[j]
     lw      $t0, 0($t2)             # v[j]
     lw      $t1, 4($t2)             # v[j + 1]
     slt     $t3, $t1, $t0           # t3 == 1 if $t1(v[j + 1]) < $t0(v[j]) else t3 == 0
@@ -35,12 +37,16 @@ loop2:          # second layer of loop
     add     $t4, $t0, $zero         # temp = a[j]
     add     $t0, $t1, $zero         # a[j] = a[j + 1]
     add     $t1, $t4, $zero         # a[j + 1] = temp
+    sw      $t0, 0($t2)
+    sw      $t1, 4($t2)
 
 continue:
     addi    $s3, $s3,  1            # j ++
     j       loop2
 
 skip2:          # skip out loop2
-    
+    addi    $s2, $s2,  1            # i ++
+    j       loop1
 
 skip1:          # skip out loop1
+    

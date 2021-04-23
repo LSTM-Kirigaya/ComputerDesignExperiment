@@ -5,7 +5,7 @@ module mips(clock, reset);
     input   clock;
     input   reset;
 
-    wire  [31: 0] instruction;
+    wire   [31: 0] instruction;
     
     // signal
     wire           RegDst;

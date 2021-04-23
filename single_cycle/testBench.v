@@ -22,9 +22,10 @@ module test();
     always  
         #40 clock = !clock; 
 
-    initial 
-    begin
-        $dumpfile("wave.vcd");
-        $dumpvars;    
-    end
+    
+    // initial 
+    // begin
+    //     $dumpfile("wave.vcd");
+    //     $dumpvars;    
+    // end
 endmodule

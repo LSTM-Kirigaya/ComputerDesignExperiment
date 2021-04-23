@@ -6,7 +6,7 @@ module im_4k(pc, out_instr);
     reg     [31: 0]  im[1023: 0];    // all the instructions restored in IM
 
     initial 
-        $readmemh("D:/Project/RTL_project/single_cycle/code.txt", im);    
+        $readmemh("./data/.text", im, 0, 1023);    
 
     assign out_instr = im[pc[11:2]];
 
