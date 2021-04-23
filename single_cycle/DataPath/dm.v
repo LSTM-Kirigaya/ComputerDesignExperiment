@@ -11,14 +11,14 @@ module dm_4k(alu_out, out2, MemWrite, clock, dm_out);
     initial 
         $readmemh("./data/.data", dm, 0, 1023);  
 
-    always @(posedge clock) 
+    always @(negedge clock) 
         if (MemWrite)
         begin
             dm[alu_out[11:2]] = out2;
             // $display("%d", out2);
         end
 
-    always @(dm[0] or dm[1] or dm[2] or dm[3] or dm[4] or dm[5]) 
+    always @(dm[0] or dm[1] or dm[2] or dm[3] or dm[4] or dm[5])        // for debug
     begin
         for (integer i = 0; i < 6; i = i + 1)
             $write("%d", dm[i]);

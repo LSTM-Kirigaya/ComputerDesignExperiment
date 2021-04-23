@@ -13,7 +13,7 @@ module data_path(RegDst, Branch, MemtoReg, ALUOp,
     input           RegDst;
     input           Branch;
     input           MemtoReg;
-    input   [ 1: 0] ALUOp;
+    input   [ 2: 0] ALUOp;
     input           MemWrite;
     input           ALUSrc;
     input           RegWrite;
@@ -55,7 +55,7 @@ module data_path(RegDst, Branch, MemtoReg, ALUOp,
         .PC(PC),
         .branch(Branch),
         .zero(zero),
-        .jump(jump),
+        .jump(Jump),
         .Ext(ext_out),
         .jump_Addr(instruction[25:0]),
         .NPC(NPC)
@@ -115,6 +115,10 @@ module data_path(RegDst, Branch, MemtoReg, ALUOp,
         .zero(zero),
         .alu_out(alu_out)
     );
+
+    // always @(*) begin
+    //     if (alu_ctrl_out)
+    // end
 
     // MEM module
     dm_4k data_memory(

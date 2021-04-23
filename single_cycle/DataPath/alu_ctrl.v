@@ -1,14 +1,17 @@
 module alu_ctrl(funct, ALUOp, alu_ctrl_out);
     input       [5:0] funct;
-    input       [1:0] ALUOp;
+    input       [2:0] ALUOp;
     output reg  [3:0] alu_ctrl_out;
 
     // ALUOp to discriminate
-    parameter LW     = 2'b00;
-    parameter SW     = 2'b00;
-    parameter BEQ    = 2'b01;
-    parameter LUI    = 2'b11;
-    parameter R_TYPE = 2'b10;
+    parameter LW     = 3'b000;       // LW, SW, ADDI and ADDIU share the same operation type in ALU(all 'ADD')
+    parameter SW     = 3'b000;
+    parameter ADDI   = 3'b000;
+    parameter ADDIU  = 3'b000;
+    parameter BEQ    = 3'b001;
+    parameter LUI    = 3'b011;
+    parameter ORI    = 3'b100;
+    parameter R_TYPE = 3'b010;
 
     // funct to discriminate
     parameter ADD  = 6'b100000;
@@ -26,6 +29,7 @@ module alu_ctrl(funct, ALUOp, alu_ctrl_out);
             SW     : alu_ctrl_out = 4'b0010;
             BEQ    : alu_ctrl_out = 4'b0110;
             LUI    : alu_ctrl_out = 4'b0101;
+            ORI    : alu_ctrl_out = 4'b0001;    // ORI and OR share the same operation in ALU
             R_TYPE:
             begin
                 case(funct)

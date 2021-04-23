@@ -1,6 +1,6 @@
 module alu(op_num1, op_num2, shamt, alu_ctrl_out, zero, alu_out);
-    input      [31:0]  op_num1;
-    input      [31:0]  op_num2;
+    input      [31:0]  op_num1;        // rs
+    input      [31:0]  op_num2;        // rt
     input      [ 3:0]  alu_ctrl_out;
     input      [ 4:0]  shamt;
     output             zero;           // zero genenrated by alu
@@ -19,18 +19,36 @@ module alu(op_num1, op_num2, shamt, alu_ctrl_out, zero, alu_out);
     begin
         case (alu_ctrl_out)
             AND : alu_out = op_num1 & op_num2;
-            OR  : alu_out = op_num1 | op_num2;
-            ADD : alu_out = op_num1 + op_num2;
-            SUB : alu_out = op_num1 - op_num2;
-            XOR : alu_out = op_num1 ^ op_num2;
-            LUI : alu_out = op_num1 + (op_num2 << 16);
-            SLL : alu_out = op_num2 << shamt;
-            SLT:
+            OR  : 
             begin
-                if (op_num1 < op_num2)
-                    alu_out = 32'b1;
-                else
-                    alu_out = 32'b0;
+                alu_out = op_num1 | op_num2;
+                // $display("op_num1 : %h | op_num2 : %h | or out : %h", op_num1, op_num2, alu_out);
+            end
+            ADD : 
+            begin
+                alu_out = op_num1 + op_num2;
+                // $display("op_num1 : %h | op_num2 : %h | add out : %h", op_num1, op_num2, alu_out);
+            end
+            SUB : 
+            begin
+                alu_out = op_num1 - op_num2;
+                // $display("op_num1 : %h | op_num2 : %h | sub out : %h", op_num1, op_num2, alu_out);
+            end
+            XOR : alu_out = op_num1 ^ op_num2;
+            LUI : 
+            begin
+                alu_out = {op_num2, 16'b0000_0000};
+                // $display("op_num2 : %h | lui out : %h", op_num2, alu_out);
+            end
+            SLL : 
+            begin
+                alu_out = op_num2 << shamt;
+                // $display("op_num2 : %h | sll out : %h", op_num2, alu_out);
+            end
+            SLT : 
+            begin
+                alu_out = (op_num1 < op_num2) ? 32'b1 : 32'b0;
+                // $display("op_num1 : %h | op_num2 : %h | slt out : %h", op_num1, op_num2, alu_out);
             end
         endcase
     end

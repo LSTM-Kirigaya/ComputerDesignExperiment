@@ -11,7 +11,7 @@ module mips(clock, reset);
     wire           RegDst;
     wire           Branch;
     wire           MemtoReg;
-    wire   [ 1: 0] ALUOp;
+    wire   [ 2: 0] ALUOp;
     wire           MemWrite;
     wire           ALUSrc;
     wire           RegWrite;
@@ -35,7 +35,6 @@ module mips(clock, reset);
 
     controller Controller(
         .opcode(instruction[31:26]),
-        .funct(instruction[5:0]),
         .RegDst(RegDst),
         .Branch(Branch),
         .MemtoReg(MemtoReg),

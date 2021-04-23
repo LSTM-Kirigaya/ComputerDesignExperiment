@@ -11,10 +11,18 @@ module regfile(rs, rt, rd, data, RegWrite, clock, reset, out1, out2);
 
     // assign value to out
     assign out1 = (rs == 0) ? 0 : registers[rs];
-    assign out2 = (rd == 0) ? 0 : registers[rd];
+    assign out2 = (rt == 0) ? 0 : registers[rt];
+
+    // always @(rs or rt) begin
+    //     $display("\033[35mrs = %h, rt = %h\033[0m", rs, rt);
+    // end
+
+    // always @(out1 or out2) begin        // for debug
+    //     $display("\033[35mregfile_out1 = %h, regfile_out2 = %h\033[0m", out1, out2);
+    // end
 
     // whether write change to register
-    always @(posedge clock or negedge reset) 
+    always @(posedge clock or posedge reset) 
     begin
         if (RegWrite)
             registers[rd] <= data;

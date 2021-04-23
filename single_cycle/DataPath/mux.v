@@ -7,9 +7,9 @@ module mux1(rt, rd, RegDst, DstReg);
     
     always @(*) 
         if (RegDst)
-            assign DstReg = rd;
+            DstReg <= rd;
         else 
-            assign DstReg = rt;
+            DstReg <= rt;
 
 endmodule
 
@@ -22,10 +22,13 @@ module mux2(out2, Ext, ALUSrc, DstData);
     output reg [31:0] DstData;     // selected data
 
     always @(*)
+    begin
         if (ALUSrc)
-            assign DstData = Ext;
+            DstData <= Ext;
         else
-            assign DstData = out2;
+            DstData <= out2;
+        // $display("mux2_out:%h", DstData);
+    end
 
 endmodule
 
@@ -40,8 +43,8 @@ module mux3(dm_out, alu_out, MemtoReg, WriteData);
 
     always @(*)
         if (MemtoReg)
-            assign WriteData = dm_out;
+            WriteData <= dm_out;
         else
-            assign WriteData = alu_out;
+            WriteData <= alu_out;
 
 endmodule

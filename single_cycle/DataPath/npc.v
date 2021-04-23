@@ -12,9 +12,12 @@ module npc (PC, branch, zero, jump, Ext, jump_Addr, NPC);
 
     always @(*)    
         if (branch && zero)
-            NPC = (Ext << 2) + PC; 
+            NPC = (Ext << 2) + PC + 4; 
         else if (jump)              // different to P182, which jump iff jump == 0. Here, we do J op iff jump == 1
+        begin    
             NPC = {PC[31:28], {jump_Addr[25:0] << 2}};
+            // $display("jump!");
+        end
         else
             NPC = PC + 4;
 

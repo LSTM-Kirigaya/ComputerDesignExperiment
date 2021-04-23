@@ -10,7 +10,7 @@ module test();
         clock <= 1;
         reset <= 1;
         #20 reset <= 0;
-        #60000 $stop;
+        #60000 $finish;
     end
 
     mips MIPS(
@@ -20,12 +20,11 @@ module test();
 
     // generate clock pluses
     always  
-        #40 clock = !clock; 
-
+        #10 clock = !clock; 
     
-    // initial 
-    // begin
-    //     $dumpfile("wave.vcd");
-    //     $dumpvars;    
-    // end
+    initial 
+    begin
+        $dumpfile("wave.vcd");
+        $dumpvars;    
+    end
 endmodule
