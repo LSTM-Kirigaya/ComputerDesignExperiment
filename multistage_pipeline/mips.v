@@ -11,7 +11,7 @@ module mips(clock, reset);
     wire           RegDst;
     wire           Branch;
     wire           MemtoReg;
-    wire   [ 2: 0] ALUOp;
+    wire   [ 3: 0] ALUOp;
     wire           MemWrite;
     wire           ALUSrc;
     wire           RegWrite;

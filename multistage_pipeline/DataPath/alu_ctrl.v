@@ -1,6 +1,6 @@
 module alu_ctrl(funct, ALUOp, alu_ctrl_out);
     input       [5:0] funct;
-    input       [2:0] ALUOp;
+    input       [3:0] ALUOp;
     output reg  [3:0] alu_ctrl_out;
 
     // ALUOp to discriminate

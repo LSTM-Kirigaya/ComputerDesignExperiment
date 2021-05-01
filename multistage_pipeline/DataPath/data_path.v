@@ -7,9 +7,14 @@
 `include "./DataPath/npc.v"
 `include "./DataPath/pc.v"
 `include "./DataPath/regfile.v"
+`include "./DataPath/branch_add.v"
+`include "./DataPath/IF_ID.v"
+`include "./DataPath/ID_EX.v"
+`include "./DataPath/EX_MEM.v"
+`include "./DataPath/MEM_WB.v"
 
 module data_path(RegDst, Branch, MemtoReg, ALUOp, 
-    MemWrite, ALUSrc, RegWrite, Jump, Ext_op, clock, reset, instruction);
+    MemWrite, ALUSrc, RegWrite, Jump, Ext_op, clock, reset, IF_ID_out);
     input           RegDst;
     input           Branch;
     input           MemtoReg;
@@ -23,7 +28,7 @@ module data_path(RegDst, Branch, MemtoReg, ALUOp,
     input           clock;
     input           reset;
 
-    output  [31: 0] instruction;
+    output  [63: 0] IF_ID_out;
 
     // variable
     wire    [31: 0] PC;             // value of pc
@@ -49,7 +54,7 @@ module data_path(RegDst, Branch, MemtoReg, ALUOp,
     wire    [63: 0] IF_ID_out;
     wire    [133:0] ID_EX_out;
     wire    [106:0] EX_MEM_out;
-    wire    [65: 0] MEM_WB_out;
+    wire    [70: 0] MEM_WB_out;
 
     // pc module
     pc program_counter(
@@ -61,10 +66,10 @@ module data_path(RegDst, Branch, MemtoReg, ALUOp,
 
     npc next_program_counter(
         .PC(PC),
-        .branch(Branch),
-        .zero(zero),
-        .Jump(Jump),
-        .branch_Addr(branch_add_out),
+        .branch(EX_MEM_out[0]),
+        .zero(EX_MEM_out[37]),
+        .Jump(EX_MEM_out[4]),
+        .branch_Addr(EX_MEM_out[36:5]),
         .jump_Addr(instruction[25:0]),
         .NPC(NPC),
         .pc_add_out(pc_add_out)
@@ -77,75 +82,130 @@ module data_path(RegDst, Branch, MemtoReg, ALUOp,
     );
 
     // IF/ID 
-    
+    IF_ID IF_ID_pipeline_register(
+        .clock(clock),
+        .pc_add_out(pc_add_out),
+        .im_out(instruction),
+        .IF_ID_out(IF_ID_out)
+    );
 
     // ID module
     regfile register_files(
-        .rs(instruction[25:21]),
-        .rt(instruction[20:16]),
-        .rd(mux1_out),
+        .rs(IF_ID_out[57:53]),
+        .rt(IF_ID_out[52:48]),
+        .rd(MEM_WB_out[70:66]),
         .data(mux3_out),
-        .RegWrite(RegWrite),
+        .RegWrite(MEM_WB_out[0]),
         .clock(clock),
         .reset(reset),
-        .out1(regfile_out1),
-        .out2(regfile_out2)
+        .regfile_out1(regfile_out1),
+        .regfile_out2(regfile_out2)
     );
 
-    Ext extension_unit(
-        .input_num(instruction[15:0]),
-        .Ext_op(Ext_op),
-        .output_num(ext_out) 
-    );
-
-    alu_ctrl ALU_controller(
-        .funct(instruction[5:0]),
+    // ID/EX
+    ID_EX ID_EX_pipeline_register(
+        .clock(clock),
+        .RegDst(RegDst),
+        .Branch(Branch),
+        .MemtoReg(MemtoReg),
         .ALUOp(ALUOp),
-        .alu_ctrl_out(alu_ctrl_out)
+        .MemWrite(MemWrite),
+        .Jump(Jump),
+        .Ext_op(Ext_op),
+        .IF_ID_pc_add_out(IF_ID_out[31:0]),
+        .regfile_out1(regfile_out1),
+        .regfile_out2(regfile_out2),
+        .I1(IF_ID_out[47:32]),
+        .I2(IF_ID_out[52:48]),
+        .I3(IF_ID_out[47:43]),
+        .ID_EX_out(ID_EX_out)
     );
 
     // EX module
     mux1 IF_ID_mux(
-        .rt(instruction[20:16]),
-        .rd(instruction[15:11]),
-        .RegDst(RegDst),
+        .rt(ID_EX_out[128:124]),
+        .rd(ID_EX_out[133:129]),
+        .RegDst(ID_EX_out[0]),
         .DstReg(mux1_out)
     );
 
+    Ext extension_unit(
+        .input_num(ID_EX_out[123:108]),
+        .Ext_op(ID_EX_out[11]),
+        .output_num(ext_out) 
+    );
+
+    alu_ctrl ALU_controller(
+        .funct(ext_out[5:0]),           // last 5 bit of instruction, which repersents funct code
+        .ALUOp(ID_EX_out[6:3]),         // ALUOp
+        .alu_ctrl_out(alu_ctrl_out)
+    );
+
     mux2 ID_EX_mux(
-        .out2(regfile_out2),
+        .out2(ID_EX_out[75:44]),        // regfile_out2
         .Ext(ext_out),
-        .ALUSrc(ALUSrc),
+        .ALUSrc(ID_EX_out[8]),          // ALUSrc
         .DstData(mux2_out)
     );
 
     alu ALU(
-        .op_num1(regfile_out1),
+        .op_num1(ID_EX_out[43:12]),     // regfile_out1
         .op_num2(mux2_out),
-        .shamt(instruction[10:6]),
+        .shamt(ext_out[10:6]),  
         .alu_ctrl_out(alu_ctrl_out),
         .zero(zero),
         .alu_out(alu_out)
     );
 
-    // always @(*) begin
-    //     if (alu_ctrl_out)
-    // end
+    branch_add branch_move_adder(
+        .ID_EX_pc_add_out(ID_EX_out[107:76]),
+        .Ext_out(ext_out),
+        .branch_add_out(branch_add_out)
+    );
+
+    // EX/MEM
+    EX_MEM EX_MEM_pipeline_register(
+        .clock(clock),
+        .Branch(ID_EX_out[1]),
+        .MemtoReg(ID_EX_out[2]),
+        .MemWrite(ID_EX_out[7]),
+        .RegWrite(ID_EX_out[9]),
+        .Jump(ID_EX_out[10]),
+        .branch_add_out(branch_add_out),
+        .zero(zero),
+        .alu_out(alu_out),
+        .ID_EX_regfile_out2(ID_EX_out[75:44]),
+        .mux1_out(mux1_out),
+        .EX_MEM_out(EX_MEM_out)
+    );
+
+    
 
     // MEM module
     dm_4k data_memory(
-        .alu_out(alu_out),
-        .out2(regfile_out2),
-        .MemWrite(MemWrite),
+        .alu_out(EX_MEM_out[69:38]),
+        .out2(EX_MEM_out[101:70]),
+        .MemWrite(EX_MEM_out[2]),
         .clock(clock),
         .dm_out(dm_out)
     );
 
+    // MEM/WB
+    MEM_WB MEM_WB_pipeline_register(
+        .clock(clock),
+        .RegWrite(EX_MEM_out[3]),
+        .MemtoReg(EX_MEM_out[1]),
+        .dm_out(dm_out),
+        .EX_MEM_alu_out(EX_MEM_out[69:38]),
+        .EX_MEM_mux1_out(EX_MEM_out[106:102]),
+        .MEM_WB_out(MEM_WB_out)
+    );
+
     // WB module
     mux3 MEM_WB_mux(
-        .dm_out(dm_out),
-        .alu_out(alu_out),
-        .MemtoReg(MemtoReg),
+        .dm_out(MEM_WB_out[33:2]),
+        .alu_out(MEM_WB_out[65:34]),
+        .MemtoReg(MEM_WB_out[1]),
         .WriteData(mux3_out)
     );
 

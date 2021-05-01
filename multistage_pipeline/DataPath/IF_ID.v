@@ -13,7 +13,7 @@ endmodule //IF_ID
 // starting index and end of each instruction
 /*
 
-    IF_ID_out[31: 0]  :    pd_add_out
+    IF_ID_out[31: 0]  :    pc_add_out
     IF_ID_out[63:32]  :    im_out    
 
 */

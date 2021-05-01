@@ -1,8 +1,8 @@
 module controller(opcode, RegDst, Branch, MemtoReg, ALUOp, 
     MemWrite, ALUSrc, RegWrite, Jump, Ext_op);
 
-    input   [31:26] opcode;         // 6-bit opcode, which is instr[31:26]         
-
+    input      [ 5: 0] opcode;         // 6-bit opcode, which is instr[31:26]         
+    
     // outputs are all signals
     output reg         RegDst;   
     output reg         Branch;
@@ -19,35 +19,72 @@ module controller(opcode, RegDst, Branch, MemtoReg, ALUOp,
     parameter T = 1'b1;
     parameter F = 1'b0;
 
-    // opcode field
-    parameter ADDI   = 6'b001000;
-    parameter ADDIU  = 6'b001001;
-    parameter BEQ    = 6'b000100;
-    parameter J      = 6'b000010;
-    parameter LW     = 6'b100011;
-    parameter SW     = 6'b101011;
-    parameter LUI    = 6'b001111;
-    parameter ORI    = 6'b001101;
+    /* opcode field */
+    parameter opcode_is_RType  = 6'b000000;
+
+    // conditional transfer
+    parameter opcode_is_BEQ    = 6'b000100;
+    parameter opcode_is_BNE    = 6'b000101;
+
+    // I type R op
+    parameter opcode_is_ADDI   = 6'b001000;
+    parameter opcode_is_ADDIU  = 6'b001001;
+    parameter opcode_is_LUI    = 6'b001111;
+    parameter opcode_is_ORI    = 6'b001101;
+    parameter opcode_is_XORI   = 6'b001110;
+    parameter opcode_is_SLTI   = 6'b001010;
+    parameter opcode_is_SLTIU  = 6'b001011;
+
+    // load and save
+    parameter opcode_is_LW     = 6'b100011;
+    parameter opcode_is_LH     = 6'b100001;
+    parameter opcode_is_LHU    = 6'b100101;
+    parameter opcode_is_LB     = 6'b100000;
+    parameter opcode_is_LBU    = 6'b100100;
+    parameter opcode_is_SW     = 6'b101011;
+    parameter opcode_is_SH     = 6'b101001;
+    parameter opcode_is_SB     = 6'b101000;
+
+    // J Type
+    parameter opcode_is_J      = 6'b000010;
+    parameter opcode_is_JAL    = 6'b000011;
 
     always @(*) 
     begin
-        if (opcode == 6'b000000)    // R type operation, use funct
+        if (opcode == opcode_is_RType)    // R type operation, use funct
             `SIGNAL = {T, F, F, F, 4'b0010, F, T, F, F};
         else
             case(opcode) 
                 // About ALUOp of I type and J type:
-                // 000: use add
-                // 001: use minus
-                // 011: load to upper 16-bit
-                // 100: use or
-                ADDI  : `SIGNAL = {F, F, F, T, 4'b0000, F, T, F, F};
-                ADDIU : `SIGNAL = {F, F, F, T, 4'b0000, F, T, F, T};
-                BEQ   : `SIGNAL = {F, T, F, F, 4'b0001, F, F, F, F};
-                J     : `SIGNAL = {F, F, F, F, 4'b0000, F, F, T, F};
-                LW    : `SIGNAL = {F, F, T, T, 4'b0000, F, T, F, F};
-                SW    : `SIGNAL = {F, F, F, T, 4'b0000, T, F, F, F};
-                LUI   : `SIGNAL = {F, F, F, T, 4'b0011, F, T, F, F};
-                ORI   : `SIGNAL = {F, F, F, T, 4'b0100, F, T, F, F};
+                // 0000: use add
+                // 0001: use minus
+                // 0011: load to upper 16-bit
+                // 0100: use or
+                // 0110: use xor
+                // 1000: use slt
+                opcode_is_BEQ   : `SIGNAL = {F, T, F, F, 4'b0001, F, F, F, F};
+                opcode_is_BNE   : `SIGNAL = {F, T, F, F, 4'b0001, F, F, F, F};
+
+                opcode_is_ADDI  : `SIGNAL = {F, F, F, T, 4'b0000, F, T, F, F};
+                opcode_is_ADDIU : `SIGNAL = {F, F, F, T, 4'b0000, F, T, F, T};
+                opcode_is_LUI   : `SIGNAL = {F, F, F, T, 4'b0011, F, T, F, F};
+                opcode_is_ORI   : `SIGNAL = {F, F, F, T, 4'b0100, F, T, F, F};
+                opcode_is_XORI  : `SIGNAL = {F, F, F, T, 4'b0110, F, T, F, F};
+                opcode_is_SLTI  : `SIGNAL = {F, F, F, T, 4'b1000, F, T, F, F};
+                opcode_is_SLTIU : `SIGNAL = {F, F, F, T, 4'b1000, F, T, F, T};
+                
+                opcode_is_LW    : `SIGNAL = {F, F, T, T, 4'b0000, F, T, F, F};
+                opcode_is_LH    : `SIGNAL = {F, F, T, T, 4'b0000, F, T, F, F};
+                opcode_is_LHU   : `SIGNAL = {F, F, T, T, 4'b0000, F, T, F, T};
+                opcode_is_LB    : `SIGNAL = {F, F, T, T, 4'b0000, F, T, F, F};
+                opcode_is_LBU   : `SIGNAL = {F, F, T, T, 4'b0000, F, T, F, T};
+                opcode_is_SW    : `SIGNAL = {F, F, F, T, 4'b0000, T, F, F, F};
+                opcode_is_SH    : `SIGNAL = {F, F, F, T, 4'b0000, T, F, F, F};
+                opcode_is_SB    : `SIGNAL = {F, F, F, T, 4'b0000, T, F, F, F};
+    
+                opcode_is_J     : `SIGNAL = {F, F, F, F, 4'b0000, F, F, T, F};
+                opcode_is_JAL   : `SIGNAL = {F, F, F, F, 4'b0000, F, T, T, F};
+
             endcase    
     end
 endmodule
