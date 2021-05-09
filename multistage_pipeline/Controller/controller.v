@@ -84,7 +84,6 @@ module controller(opcode, RegDst, Branch, MemtoReg, ALUOp,
     
                 opcode_is_J     : `SIGNAL = {F, F, F, F, 4'b0000, F, F, T, F};
                 opcode_is_JAL   : `SIGNAL = {F, F, F, F, 4'b0000, F, T, T, F};
-
             endcase    
     end
 endmodule
