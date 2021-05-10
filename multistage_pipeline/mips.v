@@ -5,11 +5,12 @@ module mips(clock, reset);
     input   clock;
     input   reset;
 
-    wire   [31: 0] instruction;
+    wire   [63: 0] IF_ID_out;
     
     // signal
+    wire   [ 1: 0] LS_bit;
     wire           RegDst;
-    wire           Branch;
+    wire   [ 1: 0] Branch;
     wire           MemtoReg;
     wire   [ 3: 0] ALUOp;
     wire           MemWrite;
@@ -17,8 +18,10 @@ module mips(clock, reset);
     wire           RegWrite;
     wire           Jump;
     wire           Ext_op;
+    wire           PctoReg;
 
     data_path DataPath(
+        .LS_bit(LS_bit),
         .RegDst(RegDst),
         .Branch(Branch),
         .MemtoReg(MemtoReg),
@@ -28,13 +31,17 @@ module mips(clock, reset);
         .RegWrite(RegWrite),
         .Jump(Jump),
         .Ext_op(Ext_op),
+        .PctoReg(PctoReg),
+
         .clock(clock),
         .reset(reset),
-        .instruction(instruction)
+        
+        .IF_ID_out(IF_ID_out)
     );
 
     controller Controller(
-        .opcode(instruction[31:26]),
+        .opcode(IF_ID_out[63:58]),
+        .LS_bit(LS_bit),
         .RegDst(RegDst),
         .Branch(Branch),
         .MemtoReg(MemtoReg),
@@ -43,7 +50,8 @@ module mips(clock, reset);
         .ALUSrc(ALUSrc),
         .RegWrite(RegWrite),
         .Jump(Jump),
-        .Ext_op(Ext_op)
+        .Ext_op(Ext_op),
+        .PctoReg(PctoReg)
     );
     
 endmodule

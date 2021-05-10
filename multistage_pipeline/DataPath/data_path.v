@@ -6,6 +6,7 @@
 `include "./DataPath/mux.v"
 `include "./DataPath/npc.v"
 `include "./DataPath/pc.v"
+`include "./DataPath/pc_add.v"
 `include "./DataPath/regfile.v"
 `include "./DataPath/branch_add.v"
 `include "./DataPath/IF_ID.v"
@@ -13,10 +14,29 @@
 `include "./DataPath/EX_MEM.v"
 `include "./DataPath/MEM_WB.v"
 
-module data_path(RegDst, Branch, MemtoReg, ALUOp, 
-    MemWrite, ALUSrc, RegWrite, Jump, Ext_op, clock, reset, IF_ID_out);
+module data_path(
+    LS_bit,
+    RegDst, 
+    Branch, 
+    MemtoReg, 
+    ALUOp, 
+    MemWrite, 
+    ALUSrc, 
+    RegWrite, 
+    Jump, 
+    Ext_op, 
+    PctoReg,
+
+    clock, 
+    reset,
+
+    IF_ID_out
+    
+    );
+
+    input   [ 1: 0] LS_bit;
     input           RegDst;
-    input           Branch;
+    input   [ 1: 0] Branch;
     input           MemtoReg;
     input   [ 3: 0] ALUOp;
     input           MemWrite;
@@ -24,6 +44,7 @@ module data_path(RegDst, Branch, MemtoReg, ALUOp,
     input           RegWrite;
     input           Jump;
     input           Ext_op;
+    input           PctoReg;
 
     input           clock;
     input           reset;
@@ -44,6 +65,9 @@ module data_path(RegDst, Branch, MemtoReg, ALUOp,
     wire    [ 4: 0] mux1_out;       // IF ID
     wire    [31: 0] mux2_out;       // ID EX
     wire    [31: 0] mux3_out;       // MEM WB
+    wire    [31: 0] mux4_out;
+    wire    [ 4: 0] mux5_out;
+    wire    [31: 0] mux6_out;
 
     wire    [ 3: 0] alu_ctrl_out;   // out of alu controller
     wire    [31: 0] alu_out;        // out of alu
@@ -51,10 +75,10 @@ module data_path(RegDst, Branch, MemtoReg, ALUOp,
     wire    [31: 0] branch_add_out; // out of branch add
 
     // pipeline register
-    wire    [63: 0] IF_ID_out;
-    wire    [133:0] ID_EX_out;
-    wire    [106:0] EX_MEM_out;
-    wire    [70: 0] MEM_WB_out;
+    wire    [63 : 0] IF_ID_out;
+    wire    [137: 0] ID_EX_out;
+    wire    [169: 0] EX_MEM_out;
+    wire    [103: 0] MEM_WB_out;
 
     // pc module
     pc program_counter(
@@ -64,15 +88,19 @@ module data_path(RegDst, Branch, MemtoReg, ALUOp,
         .PC(PC)
     );
 
-    npc next_program_counter(
+    pc_add pc_adder(
         .PC(PC),
-        .branch(EX_MEM_out[0]),
-        .zero(EX_MEM_out[37]),
-        .Jump(EX_MEM_out[4]),
-        .branch_Addr(EX_MEM_out[36:5]),
-        .jump_Addr(instruction[25:0]),
-        .NPC(NPC),
         .pc_add_out(pc_add_out)
+    );
+
+    npc next_program_counter(
+        .Jump(Jump),
+        .branch(Branch),
+        .zero(zero),
+        .EX_MEM_branch_add_out(EX_MEM_out[40:9]),
+        .EX_MEM_pc_add_out(EX_MEM_out[73:42]),
+        .EX_MEM_instr26(EX_MEM_out[99:74]),
+        .NPC(NPC)
     );
 
     // IF module, from pc value to the cycle's instructions
@@ -93,8 +121,8 @@ module data_path(RegDst, Branch, MemtoReg, ALUOp,
     regfile register_files(
         .rs(IF_ID_out[57:53]),
         .rt(IF_ID_out[52:48]),
-        .rd(MEM_WB_out[70:66]),
-        .data(mux3_out),
+        .rd(mux5_out),
+        .data(mux4_out),
         .RegWrite(MEM_WB_out[0]),
         .clock(clock),
         .reset(reset),
@@ -105,6 +133,9 @@ module data_path(RegDst, Branch, MemtoReg, ALUOp,
     // ID/EX
     ID_EX ID_EX_pipeline_register(
         .clock(clock),
+        .reset(reset),
+
+        .LS_bit(LS_bit),
         .RegDst(RegDst),
         .Branch(Branch),
         .MemtoReg(MemtoReg),
@@ -112,44 +143,45 @@ module data_path(RegDst, Branch, MemtoReg, ALUOp,
         .MemWrite(MemWrite),
         .Jump(Jump),
         .Ext_op(Ext_op),
+        .PctoReg(PctoReg),
+        
         .IF_ID_pc_add_out(IF_ID_out[31:0]),
         .regfile_out1(regfile_out1),
         .regfile_out2(regfile_out2),
-        .I1(IF_ID_out[47:32]),
-        .I2(IF_ID_out[52:48]),
-        .I3(IF_ID_out[47:43]),
+        .instr26(IF_ID_out[57:32]),
+
         .ID_EX_out(ID_EX_out)
     );
 
     // EX module
-    mux1 IF_ID_mux(
-        .rt(ID_EX_out[128:124]),
-        .rd(ID_EX_out[133:129]),
-        .RegDst(ID_EX_out[0]),
+    mux1 u_mux1(
+        .rt(ID_EX_out[132:128]),
+        .rd(ID_EX_out[127:123]),
+        .RegDst(ID_EX_out[2]),
         .DstReg(mux1_out)
     );
 
     Ext extension_unit(
-        .input_num(ID_EX_out[123:108]),
-        .Ext_op(ID_EX_out[11]),
+        .input_num(ID_EX_out[127:112]),
+        .Ext_op(ID_EX_out[14]),
         .output_num(ext_out) 
     );
 
     alu_ctrl ALU_controller(
         .funct(ext_out[5:0]),           // last 5 bit of instruction, which repersents funct code
-        .ALUOp(ID_EX_out[6:3]),         // ALUOp
+        .ALUOp(ID_EX_out[9:6]),         // ALUOp
         .alu_ctrl_out(alu_ctrl_out)
     );
 
-    mux2 ID_EX_mux(
-        .out2(ID_EX_out[75:44]),        // regfile_out2
+    mux2 u_mux2(
+        .out2(ID_EX_out[111:80]),        // regfile_out2
         .Ext(ext_out),
-        .ALUSrc(ID_EX_out[8]),          // ALUSrc
+        .ALUSrc(ID_EX_out[11]),          // ALUSrc
         .DstData(mux2_out)
     );
 
     alu ALU(
-        .op_num1(ID_EX_out[43:12]),     // regfile_out1
+        .op_num1(ID_EX_out[79:48]),     // regfile_out1
         .op_num2(mux2_out),
         .shamt(ext_out[10:6]),  
         .alu_ctrl_out(alu_ctrl_out),
@@ -158,55 +190,93 @@ module data_path(RegDst, Branch, MemtoReg, ALUOp,
     );
 
     branch_add branch_move_adder(
-        .ID_EX_pc_add_out(ID_EX_out[107:76]),
+        .ID_EX_pc_add_out(ID_EX_out[47:16]),
         .Ext_out(ext_out),
         .branch_add_out(branch_add_out)
     );
 
+    mux6 u_mux6(
+        .ID_EX_pc_add_out(ID_EX_out[47:16]),
+        .ID_EX_regfile_out2(ID_EX_out[111:80]),
+        .funct(ID_EX_out[117:112]),
+        .mux6_out(mux6_out)
+    );  
+
+
     // EX/MEM
     EX_MEM EX_MEM_pipeline_register(
         .clock(clock),
-        .Branch(ID_EX_out[1]),
-        .MemtoReg(ID_EX_out[2]),
-        .MemWrite(ID_EX_out[7]),
-        .RegWrite(ID_EX_out[9]),
-        .Jump(ID_EX_out[10]),
+        .reset(reset),
+
+        .LS_bit(LS_bit),
+        .Branch(ID_EX_out[4:3]),
+        .MemtoReg(ID_EX_out[5]),
+        .MemWrite(ID_EX_out[10]),
+        .RegWrite(ID_EX_out[12]),
+        .Jump(ID_EX_out[13]),
+        .Ext_op(ID_EX_out[14]),
+        .PctoReg(ID_EX_out[15]),
+
         .branch_add_out(branch_add_out),
         .zero(zero),
+        .ID_EX_pc_add_out(mux6_out),
+        .ID_EX_instr26(ID_EX_out[137:112]),
         .alu_out(alu_out),
-        .ID_EX_regfile_out2(ID_EX_out[75:44]),
+        .ID_EX_regfile_out2(ID_EX_out[111:80]),
         .mux1_out(mux1_out),
+
         .EX_MEM_out(EX_MEM_out)
     );
 
     
-
     // MEM module
     dm_4k data_memory(
-        .alu_out(EX_MEM_out[69:38]),
-        .out2(EX_MEM_out[101:70]),
-        .MemWrite(EX_MEM_out[2]),
         .clock(clock),
+        .EX_MEM_alu_out(EX_MEM_out[132:101]),
+        .EX_MEM_register_out2(EX_MEM_out[164:133]),
+        .LS_bit(EX_MEM_out[1:0]),
+        .MemWrite(EX_MEM_out[2]),
+        .Ext_op(EX_MEM_out[8]),
         .dm_out(dm_out)
     );
 
     // MEM/WB
     MEM_WB MEM_WB_pipeline_register(
         .clock(clock),
-        .RegWrite(EX_MEM_out[3]),
-        .MemtoReg(EX_MEM_out[1]),
+        .reset(reset),
+
+        .RegWrite(EX_MEM_out[6]),
+        .MemtoReg(EX_MEM_out[4]),
+        .PctoReg(EX_MEM_out[9]),
+
+        .EX_MEM_pc_add_out(EX_MEM_out[74:43]),
         .dm_out(dm_out),
-        .EX_MEM_alu_out(EX_MEM_out[69:38]),
-        .EX_MEM_mux1_out(EX_MEM_out[106:102]),
+        .EX_MEM_alu_out(EX_MEM_out[132:101]),
+        .EX_MEM_mux1_out(EX_MEM_out[169:165]),
+
         .MEM_WB_out(MEM_WB_out)
     );
 
     // WB module
-    mux3 MEM_WB_mux(
-        .dm_out(MEM_WB_out[33:2]),
-        .alu_out(MEM_WB_out[65:34]),
+    mux3 u_mux3(
+        .dm_out(MEM_WB_out[66:35]),
+        .alu_out(MEM_WB_out[98:67]),
         .MemtoReg(MEM_WB_out[1]),
-        .WriteData(mux3_out)
+        .mux3_out(mux3_out)
+    );
+
+
+    mux4 u_mux4(
+        .mux3_out(mux3_out),
+        .MEM_WB_pc_add_out(MEM_WB_out[34:3]),
+        .PctoReg(MEM_WB_out[2]),
+        .mux4_out(mux4_out)
+    );
+
+    mux5 u_mux5(
+        .MEM_WB_mux1_out(),
+        .PctoReg(),
+        .mux5_out(mux5_out)
     );
 
 endmodule

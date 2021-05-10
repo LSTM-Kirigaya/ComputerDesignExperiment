@@ -4,9 +4,9 @@ module IF_ID (clock, pc_add_out, im_out, IF_ID_out);
     input      [31: 0]  im_out;
     output reg [63: 0]  IF_ID_out;
 
-    always @(posedge clock) begin
+    always @(posedge clock) 
         IF_ID_out = {pc_add_out, im_out};
-    end
+    
 
 endmodule //IF_ID
 

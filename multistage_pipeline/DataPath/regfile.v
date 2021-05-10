@@ -25,7 +25,7 @@ module regfile(rs, rt, rd, data, RegWrite, clock, reset, regfile_out1, regfile_o
     // whether write change to register
     always @(posedge clock or posedge reset) 
     begin
-        if (RegWrite)
+        if (RegWrite && rd != 5'b00000)
             registers[rd] <= data;
         else if (reset)                 // reset all the register to zero
             for (i = 0; i < 32; i = i + 1)

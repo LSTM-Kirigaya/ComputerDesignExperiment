@@ -32,19 +32,61 @@ module mux2(out2, Ext, ALUSrc, DstData);
 
 endmodule
 
-
-
 // mux between MEM and WB
-module mux3(dm_out, alu_out, MemtoReg, WriteData);
+module mux3(dm_out, alu_out, MemtoReg, mux3_out);
     input       [31:0] dm_out;      // result of dm
     input       [31:0] alu_out;     // result of alu
     input              MemtoReg;    // signal
-    output reg  [31:0] WriteData;   // selected data
+    output reg  [31:0] mux3_out;   // selected data
 
     always @(*)
         if (MemtoReg)
-            WriteData <= dm_out;
+            mux3_out <= dm_out;
         else
-            WriteData <= alu_out;
+            mux3_out <= alu_out;
 
 endmodule
+
+module mux4(mux3_out, MEM_WB_pc_add_out, PctoReg, mux4_out);
+    input       [31:0] mux3_out;
+    input       [31:0] MEM_WB_pc_add_out;
+    input              PctoReg;
+    output reg  [31:0] mux4_out;
+
+    always @(*) begin
+        if (PctoReg)
+            mux4_out <= MEM_WB_pc_add_out + 4;
+        else 
+            mux4_out <= mux3_out;
+    end
+endmodule
+
+// choose RegDst (nornal or 31)
+module mux5(MEM_WB_mux1_out, PctoReg, mux5_out);
+    input       [ 4: 0] MEM_WB_mux1_out;
+    input               PctoReg;
+    output reg  [ 4: 0] mux5_out;
+
+    always @(*) begin
+        if (PctoReg)
+            mux5_out <= 31;
+        else 
+            mux5_out <= MEM_WB_mux1_out; 
+    end
+endmodule //mux5
+
+// whether use JR
+module mux6(ID_EX_pc_add_out, ID_EX_regfile_out2, funct, mux6_out);
+    input       [31: 0] ID_EX_pc_add_out;
+    input       [31: 0] ID_EX_regfile_out2;
+    input       [ 5: 0] funct;
+    output reg  [31: 0] mux6_out;
+
+    always @(*) begin
+        if (funct == 6'b001000) // whether is jr
+            mux6_out <= ID_EX_regfile_out2;
+        else 
+            mux6_out <= ID_EX_pc_add_out;
+    end
+
+endmodule //mux6

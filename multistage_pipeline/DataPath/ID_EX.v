@@ -1,13 +1,35 @@
-module ID_EX (clock, RegDst, Branch, MemtoReg, ALUOp, 
-    MemWrite, ALUSrc, RegWrite, Jump, Ext_op,
-    IF_ID_pc_add_out, regfile_out1, regfile_out2, 
-    I1, I2, I3, ID_EX_out);
+module ID_EX (
+    clock, 
+    reset,
 
+    LS_bit,
+    RegDst, 
+    Branch, 
+    MemtoReg, 
+    ALUOp, 
+    MemWrite, 
+    ALUSrc, 
+    RegWrite, 
+    Jump, 
+    Ext_op,
+    PctoReg,
+
+    IF_ID_pc_add_out, 
+    regfile_out1, 
+    regfile_out2, 
+    instr26,
+
+    ID_EX_out
+    );
+
+    // system signal
     input          clock;
+    input          reset;
 
     // input of controller
+    input  [ 1: 0] LS_bit;
     input          RegDst;   
-    input          Branch;
+    input  [ 1: 0] Branch;
     input          MemtoReg;
     input  [ 3: 0] ALUOp;
     input          MemWrite;
@@ -15,6 +37,7 @@ module ID_EX (clock, RegDst, Branch, MemtoReg, ALUOp,
     input          RegWrite;
     input          Jump;
     input          Ext_op;
+    input          PctoReg;
 
     // input of regfile
     input  [31: 0] regfile_out1;
@@ -24,17 +47,28 @@ module ID_EX (clock, RegDst, Branch, MemtoReg, ALUOp,
     input  [31: 0] IF_ID_pc_add_out;
 
     // input of instruction left
-    input  [15: 0] I1;
-    input  [ 4: 0] I2;
-    input  [ 4: 0] I3;
+    input  [25: 0] instr26;
 
-    output reg [133:0] ID_EX_out;
+    output reg [137:0] ID_EX_out;
 
     always @(posedge clock) begin
-        ID_EX_out = {RegDst, Branch, MemtoReg, ALUOp, 
-            MemWrite, ALUSrc, RegWrite, Jump, Ext_op,
-            IF_ID_pc_add_out, regfile_out1, regfile_out2, 
-            I1, I2, I3};
+        ID_EX_out = {
+            LS_bit,
+            RegDst, 
+            Branch, 
+            MemtoReg, 
+            ALUOp, 
+            MemWrite, 
+            ALUSrc, 
+            RegWrite, 
+            Jump, 
+            Ext_op,
+            PctoReg,
+            IF_ID_pc_add_out, 
+            regfile_out1, 
+            regfile_out2, 
+            instr26
+        };
     end
 
 endmodule //ID_EX
@@ -42,20 +76,21 @@ endmodule //ID_EX
 // starting index and end of each instruction
 /*
 
-    ID_EX_out[0]      :  RegDst
-    ID_EX_out[1]      :  Branch
-    ID_EX_out[2]      :  MemtoReg
-    ID_EX_out[6:3]    :  ALUOp
-    ID_EX_out[7]      :  MemWrite
-    ID_EX_out[8]      :  ALUSrc
-    ID_EX_out[9]      :  RegWrite
-    ID_EX_out[10]     :  Jump
-    ID_EX_out[11]     :  Ext_op
-    ID_EX_out[43:12]  :  regfile_out1
-    ID_EX_out[75:44]  :  regfile_out2
-    ID_EX_out[107:76] :  IF_ID_pc_add_out
-    ID_EX_out[123:108]:  I1
-    ID_EX_out[128:124]:  I2
-    ID_EX_out[133:129]:  I3
+    ID_EX_out[1:0]     :  LS_bit
+    ID_EX_out[2]       :  RegDst
+    ID_EX_out[4:3]     :  Branch
+    ID_EX_out[5]       :  MemtoReg
+    ID_EX_out[9:6]     :  ALUOp
+    ID_EX_out[10]      :  MemWrite
+    ID_EX_out[11]      :  ALUSrc
+    ID_EX_out[12]      :  RegWrite
+    ID_EX_out[13]      :  Jump
+    ID_EX_out[14]      :  Ext_op
+    ID_EX_out[15]      :  PctoReg
+
+    ID_EX_out[47:16]   :  IF_ID_pc_add_out
+    ID_EX_out[79:48]   :  regfile_out1
+    ID_EX_out[111:80]  :  regfile_out2
+    ID_EX_out[137:112] :  instr26
 
 */
