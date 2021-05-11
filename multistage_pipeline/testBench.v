@@ -9,8 +9,8 @@ module test();
     begin
         clock <= 1;
         reset <= 1;
-        #20 reset <= 0;
-        #60000 $finish;
+        #10 reset <= 0;
+        #6000 $finish;
     end
 
     mips MIPS(
@@ -24,6 +24,7 @@ module test();
     
     initial 
     begin
+        // $monitor($time, "");
         $dumpfile("wave.vcd");
         $dumpvars;    
     end

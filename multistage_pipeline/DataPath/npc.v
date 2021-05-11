@@ -23,9 +23,13 @@ module npc (
 
     always @(*)    
         if (branch == 2'b01 && zero == 1)        // beq
+        begin
             NPC = EX_MEM_branch_add_out; 
+        end
         else if (branch == 2'b10 && zero == 0)   // bne
+        begin
             NPC = EX_MEM_branch_add_out;
+        end
         else if (Jump)              // different to P182, which Jump iff Jump == 0. Here, we do J op iff Jump == 1
         begin    
             PC = EX_MEM_pc_add_out - 4;
@@ -33,6 +37,9 @@ module npc (
             // $display("Jump!");
         end
         else
+        begin
+            // $display("enter", "%h", EX_MEM_pc_add_out);
             NPC = EX_MEM_pc_add_out;
+        end
 
 endmodule //npc 

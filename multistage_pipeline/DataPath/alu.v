@@ -73,7 +73,7 @@ module alu(op_num1, op_num2, shamt, alu_ctrl_out, zero, alu_out);
 
             SRA :
             begin
-                alu_out = op_num2 >>> shamt;
+                alu_out = $signed(op_num2) >>> shamt;
             end
 
             SLT : 

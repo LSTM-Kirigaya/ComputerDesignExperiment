@@ -5,7 +5,7 @@ module mips(clock, reset);
     input   clock;
     input   reset;
 
-    wire   [63: 0] IF_ID_out;
+    wire   [31: 0] ID_EX_im_out;
     
     // signal
     wire   [ 1: 0] LS_bit;
@@ -36,11 +36,11 @@ module mips(clock, reset);
         .clock(clock),
         .reset(reset),
         
-        .IF_ID_out(IF_ID_out)
+        .ID_EX_im_out(ID_EX_im_out)
     );
 
     controller Controller(
-        .opcode(IF_ID_out[63:58]),
+        .opcode(ID_EX_im_out[31:26]),
         .LS_bit(LS_bit),
         .RegDst(RegDst),
         .Branch(Branch),

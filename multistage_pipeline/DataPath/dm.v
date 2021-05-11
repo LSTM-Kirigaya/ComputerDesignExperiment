@@ -1,7 +1,7 @@
 module dm_4k(
     clock, 
     EX_MEM_alu_out, 
-    EX_MEM_register_out2, 
+    EX_MEM_regfile_out2, 
     LS_bit,
     MemWrite, 
     Ext_op,
@@ -9,7 +9,7 @@ module dm_4k(
     );
 
     input       [31:0] EX_MEM_alu_out;     // result of alu
-    input       [31:0] EX_MEM_register_out2;               // result of im
+    input       [31:0] EX_MEM_regfile_out2;               // result of im
     input       [ 1:0] LS_bit;
     input              MemWrite;           // signal
     input              clock;              // signal
@@ -33,21 +33,21 @@ module dm_4k(
         if (MemWrite)               // save data
         begin
             case(LS_bit)
-                WORD : dm[EX_MEM_alu_out[11: 2]] = EX_MEM_register_out2[31: 0];
+                WORD : dm[EX_MEM_alu_out[11: 2]] = EX_MEM_regfile_out2[31: 0];
                 HALF : 
                 case(EX_MEM_alu_out[1])              // ensure which half word in the whole word to process
-                    1'b0  :  dm[EX_MEM_alu_out[11: 2]][15: 0] = EX_MEM_register_out2[15: 0];
-                    1'b1  :  dm[EX_MEM_alu_out[11: 2]][31:16] = EX_MEM_register_out2[15: 0];
+                    1'b0  :  dm[EX_MEM_alu_out[11: 2]][15: 0] = EX_MEM_regfile_out2[15: 0];
+                    1'b1  :  dm[EX_MEM_alu_out[11: 2]][31:16] = EX_MEM_regfile_out2[15: 0];
                 endcase
                 BYTE : 
                 case(EX_MEM_alu_out[ 1: 0])
-                    2'b00 : dm[EX_MEM_alu_out[11: 2]][ 7: 0] = EX_MEM_register_out2[ 7: 0];
-                    2'b01 : dm[EX_MEM_alu_out[11: 2]][15: 8] = EX_MEM_register_out2[ 7: 0];
-                    2'b10 : dm[EX_MEM_alu_out[11: 2]][23:16] = EX_MEM_register_out2[ 7: 0];
-                    2'b11 : dm[EX_MEM_alu_out[11: 2]][31:24] = EX_MEM_register_out2[ 7: 0];
+                    2'b00 : dm[EX_MEM_alu_out[11: 2]][ 7: 0] = EX_MEM_regfile_out2[ 7: 0];
+                    2'b01 : dm[EX_MEM_alu_out[11: 2]][15: 8] = EX_MEM_regfile_out2[ 7: 0];
+                    2'b10 : dm[EX_MEM_alu_out[11: 2]][23:16] = EX_MEM_regfile_out2[ 7: 0];
+                    2'b11 : dm[EX_MEM_alu_out[11: 2]][31:24] = EX_MEM_regfile_out2[ 7: 0];
                 endcase
             endcase
-            // $display("%d", EX_MEM_register_out2);
+            // $display("%d", EX_MEM_regfile_out2);
         end
 
     // always @(dm[0] or dm[1] or dm[2] or dm[3] or dm[4] or dm[5])        // for debug

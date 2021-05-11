@@ -76,15 +76,15 @@ module mux5(MEM_WB_mux1_out, PctoReg, mux5_out);
 endmodule //mux5
 
 // whether use JR
-module mux6(ID_EX_pc_add_out, ID_EX_regfile_out2, funct, mux6_out);
+module mux6(ID_EX_pc_add_out, ID_EX_regfile_out1, funct, mux6_out);
     input       [31: 0] ID_EX_pc_add_out;
-    input       [31: 0] ID_EX_regfile_out2;
+    input       [31: 0] ID_EX_regfile_out1;
     input       [ 5: 0] funct;
     output reg  [31: 0] mux6_out;
 
     always @(*) begin
         if (funct == 6'b001000) // whether is jr
-            mux6_out <= ID_EX_regfile_out2;
+            mux6_out <= ID_EX_regfile_out1;
         else 
             mux6_out <= ID_EX_pc_add_out;
     end
