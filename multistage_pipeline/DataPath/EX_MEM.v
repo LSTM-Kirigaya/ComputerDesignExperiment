@@ -75,6 +75,9 @@ module EX_MEM (
     output reg  [31: 0] EX_MEM_regfile_out2;
     output reg  [ 4: 0] EX_MEM_mux1_out;
 
+    always @(negedge reset) begin
+        EX_MEM_pc_add_out       <= 32'h0000_3004;
+    end
 
     always @(posedge clock) 
     begin
@@ -98,49 +101,5 @@ module EX_MEM (
 
     // reset signal to control pc before pipeline full
     // ensure Branch and jump is 0
-    // always @(negedge reset) 
-    // begin
-    //     EX_MEM_out = {
-    //         mux1_out,
-    //         ID_EX_regfile_out2,
-    //         alu_out,
-    //         ID_EX_instr26,
-    //         32'h0000_3000,
-    //         zero,
-    //         branch_add_out,
-
-    //         PctoReg,
-    //         Ext_op,
-    //         1'b0,
-    //         RegWrite,
-    //         MemWrite,
-    //         MemtoReg,
-    //         2'b00,
-    //         LS_bit
-    //     };
-    // end
-    
 
 endmodule //EX_MEM
-
-// starting index and end of each instruction
-/*
-
-    EX_MEM_out[1:0]  :    LS_bit
-    EX_MEM_out[3:2]  :    Branch
-    EX_MEM_out[4]    :    MemtoReg
-    EX_MEM_out[5]    :    MemWrite
-    EX_MEM_out[6]    :    RegWrite
-    EX_MEM_out[7]    :    Jump
-    EX_MEM_out[8]    :    Ext_op
-    EX_MEM_out[9]    :    PctoReg
-
-    EX_MEM_out[41:10]    :  branch_add_out
-    EX_MEM_out[42]       :  zero
-    EX_MEM_out[74:43]    :  ID_EX_pc_add_out,
-    EX_MEM_out[100:75]   :  ID_EX_instr26,
-    EX_MEM_out[132:101]  :  alu_out
-    EX_MEM_out[164:133]  :  ID_EX_regfile_out2
-    EX_MEM_out[169:165]  :  mux1_out
-
-*/

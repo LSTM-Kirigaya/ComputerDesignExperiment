@@ -56,16 +56,3 @@ module MEM_WB (
     
 
 endmodule //MEM_WB
-
-// starting index and end of each instruction
-/*
-
-    MEM_WB_out[0]     :    RegWrite
-    MEM_WB_out[1]     :    MemtoReg
-    MEM_WB_out[2]     :    PctoReg
-
-    MEM_WB_out[34:3]    :    EX_MEM_pc_add_out
-    MEM_WB_out[66:35]   :    dm_out
-    MEM_WB_out[98:67]   :    EX_MEM_alu_out
-    MEM_WB_out[103:99]  :    EX_MEM_mux1_out
-*/

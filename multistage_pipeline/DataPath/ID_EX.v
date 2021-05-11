@@ -70,7 +70,11 @@ module ID_EX (
     output reg  [31: 0] ID_EX_regfile_out1;
     output reg  [31: 0] ID_EX_regfile_out2;
     output reg  [31: 0] ID_EX_pc_add_out;
-    output reg  [25: 0] ID_EX_instr26;       
+    output reg  [25: 0] ID_EX_instr26;     
+
+    always @(negedge reset) begin
+        ID_EX_pc_add_out        <=  32'h0000_3008; 
+    end   
 
     always @(posedge clock) begin
         // $display($time, "%h", IF_ID_pc_add_out);
@@ -87,30 +91,9 @@ module ID_EX (
         ID_EX_PctoReg           <=  PctoReg;
         ID_EX_regfile_out1      <=  regfile_out1;
         ID_EX_regfile_out2      <=  regfile_out2;
-        ID_EX_pc_add_out  <=  IF_ID_pc_add_out;
+        ID_EX_pc_add_out        <=  IF_ID_pc_add_out;
         ID_EX_instr26           <=  instr26;
     end
 
 endmodule //ID_EX
 
-// starting index and end of each instruction
-/*
-
-    ID_EX_out[1:0]     :  LS_bit
-    ID_EX_out[2]       :  RegDst
-    ID_EX_out[4:3]     :  Branch
-    ID_EX_out[5]       :  MemtoReg
-    ID_EX_out[9:6]     :  ALUOp
-    ID_EX_out[10]      :  MemWrite
-    ID_EX_out[11]      :  ALUSrc
-    ID_EX_out[12]      :  RegWrite
-    ID_EX_out[13]      :  Jump
-    ID_EX_out[14]      :  Ext_op
-    ID_EX_out[15]      :  PctoReg
-
-    ID_EX_out[47:16]   :  IF_ID_pc_add_out
-    ID_EX_out[79:48]   :  regfile_out1
-    ID_EX_out[111:80]  :  regfile_out2
-    ID_EX_out[137:112] :  instr26
-
-*/
