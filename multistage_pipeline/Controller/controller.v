@@ -70,6 +70,11 @@ module controller(
     parameter BYTE  = 2'b10; 
 
 
+    /* SIGNAL :
+
+        LS_bit, RegDst, Branch, MemtoReg, ALUSrc, ALUOp, MemWrite, RegWrite, Jump, Ext_op, PctoReg
+    
+    */
     always @(*) 
     begin
         if (opcode == opcode_is_RType)    // R type operation, use funct

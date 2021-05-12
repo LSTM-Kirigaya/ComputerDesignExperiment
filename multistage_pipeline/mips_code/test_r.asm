@@ -4,7 +4,7 @@ addi    $s1, $zero, 1       # s1 = s1 + 1    = 0x0000_0001
 addi    $s2, $zero, 2       # s2 = s2 + 2    = 0x0000_0002
 addi    $s1, $zero, 3       # s1 = s1 + 3    = 0x0000_0003
 addi    $s2, $zero, 4       # s2 = s2 + 4    = 0x0000_0004
-addiu   $s1, $zero, 5       # s1 = s1 + 5    = 0x0000_0005
+addiu   $s1, $zero, 5     =  # s1 = s1 + 5    = 0x0000_0005
 addiu   $s2, $zero, 6       # s2 = s2 + 6    = 0x0000_0006
 add     $s3, $s1,   $s2     # s3 = 5 + 6     = 0x0000_000b
 addu    $s3, $s1,   $s2     # s3 = 5 + 6     = 0x0000_000b

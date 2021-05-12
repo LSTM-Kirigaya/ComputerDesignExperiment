@@ -30,7 +30,7 @@ module data_path(
     clock, 
     reset,
 
-    ID_EX_im_out
+    IF_ID_im_out
     
     );
 
@@ -49,7 +49,7 @@ module data_path(
     input           clock;
     input           reset;
 
-    output  [31: 0] ID_EX_im_out;
+    output  [31: 0] IF_ID_im_out;
 
 
     // variable
@@ -137,7 +137,7 @@ module data_path(
         .branch(EX_MEM_Branch),
         .zero(EX_MEM_zero),
         .EX_MEM_branch_add_out(EX_MEM_branch_add_out),
-        .EX_MEM_pc_add_out(EX_MEM_pc_add_out),
+        .EX_MEM_pc_add_out(pc_add_out),
         .EX_MEM_instr26(EX_MEM_instr26),
         .NPC(NPC)
     );
@@ -181,6 +181,8 @@ module data_path(
         .MemtoReg(MemtoReg),
         .ALUOp(ALUOp),
         .MemWrite(MemWrite),
+        .ALUSrc(ALUSrc),
+        .RegWrite(RegWrite),
         .Jump(Jump),
         .Ext_op(Ext_op),
         .PctoReg(PctoReg),
@@ -346,8 +348,8 @@ module data_path(
     );
 
     mux5 u_mux5(
-        .MEM_WB_mux1_out(),
-        .PctoReg(),
+        .MEM_WB_mux1_out(MEM_WB_mux1_out),
+        .PctoReg(PctoReg),
         .mux5_out(mux5_out)
     );
 

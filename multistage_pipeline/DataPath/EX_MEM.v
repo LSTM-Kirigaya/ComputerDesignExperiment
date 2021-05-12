@@ -75,9 +75,9 @@ module EX_MEM (
     output reg  [31: 0] EX_MEM_regfile_out2;
     output reg  [ 4: 0] EX_MEM_mux1_out;
 
-    always @(negedge reset) begin
-        EX_MEM_pc_add_out       <= 32'h0000_3004;
-    end
+    // always @(negedge reset) begin
+    //     EX_MEM_pc_add_out       <= 32'h0000_3004;
+    // end
 
     always @(posedge clock) 
     begin

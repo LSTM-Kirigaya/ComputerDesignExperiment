@@ -1,4 +1,15 @@
-module regfile(rs, rt, rd, data, RegWrite, clock, reset, regfile_out1, regfile_out2);
+module regfile(
+    rs, 
+    rt, 
+    rd, 
+    data, 
+    RegWrite, 
+    clock, 
+    reset, 
+    regfile_out1, 
+    regfile_out2
+    );
+    
     input   [ 4:0]    rs, rt, rd;       // three registers
     input   [31:0]    data;             // data to write to the register
     input             clock, reset; 

@@ -5,7 +5,6 @@ module mips(clock, reset);
     input   clock;
     input   reset;
 
-    wire   [31: 0] ID_EX_im_out;
     
     // signal
     wire   [ 1: 0] LS_bit;
@@ -19,6 +18,8 @@ module mips(clock, reset);
     wire           Jump;
     wire           Ext_op;
     wire           PctoReg;
+
+    wire   [31: 0] IF_ID_im_out;
 
     data_path DataPath(
         .LS_bit(LS_bit),
@@ -36,11 +37,11 @@ module mips(clock, reset);
         .clock(clock),
         .reset(reset),
         
-        .ID_EX_im_out(ID_EX_im_out)
+        .IF_ID_im_out(IF_ID_im_out)
     );
 
     controller Controller(
-        .opcode(ID_EX_im_out[31:26]),
+        .opcode(IF_ID_im_out[31:26]),
         .LS_bit(LS_bit),
         .RegDst(RegDst),
         .Branch(Branch),

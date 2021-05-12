@@ -72,9 +72,9 @@ module ID_EX (
     output reg  [31: 0] ID_EX_pc_add_out;
     output reg  [25: 0] ID_EX_instr26;     
 
-    always @(negedge reset) begin
-        ID_EX_pc_add_out        <=  32'h0000_3008; 
-    end   
+    // always @(negedge reset) begin
+    //     ID_EX_pc_add_out        <=  32'h0000_3008; 
+    // end   
 
     always @(posedge clock) begin
         // $display($time, "%h", IF_ID_pc_add_out);
