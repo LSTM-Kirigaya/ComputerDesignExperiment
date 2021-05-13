@@ -55,7 +55,7 @@ module mux4(mux3_out, MEM_WB_pc_add_out, PctoReg, mux4_out);
 
     always @(*) begin
         if (PctoReg)
-            mux4_out <= MEM_WB_pc_add_out + 4;
+            mux4_out <= MEM_WB_pc_add_out;
         else 
             mux4_out <= mux3_out;
     end
@@ -69,24 +69,8 @@ module mux5(MEM_WB_mux1_out, PctoReg, mux5_out);
 
     always @(*) begin
         if (PctoReg)
-            mux5_out <= 31;
+            mux5_out <= 5'b11111;       // select rs
         else 
             mux5_out <= MEM_WB_mux1_out; 
     end
 endmodule //mux5
-
-// whether use JR
-module mux6(ID_EX_pc_add_out, ID_EX_regfile_out1, funct, mux6_out);
-    input       [31: 0] ID_EX_pc_add_out;
-    input       [31: 0] ID_EX_regfile_out1;
-    input       [ 5: 0] funct;
-    output reg  [31: 0] mux6_out;
-
-    always @(*) begin
-        if (funct == 6'b001000) // whether is jr
-            mux6_out <= ID_EX_regfile_out1;
-        else 
-            mux6_out <= ID_EX_pc_add_out;
-    end
-
-endmodule //mux6

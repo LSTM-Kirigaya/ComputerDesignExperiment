@@ -1,5 +1,6 @@
 module controller(
     opcode, 
+    funct,
     LS_bit,
     RegDst, 
     Branch, 
@@ -10,11 +11,13 @@ module controller(
     RegWrite, 
     Jump, 
     Ext_op, 
-    PctoReg
+    PctoReg,
+    JR
     );
 
     input      [ 5: 0] opcode;         // 6-bit opcode, which is instr[31:26]         
-    
+    input      [ 5: 0] funct;
+
     // outputs are all signals
     output reg [ 1: 0] LS_bit;          // 00 : word         01 : half word   10 : byte
     output reg         RegDst;   
@@ -27,9 +30,10 @@ module controller(
     output reg         Jump;
     output reg         Ext_op;
     output reg         PctoReg;
+    output reg         JR;
 
     // for easy use 
-    `define SIGNAL {LS_bit, RegDst, Branch, MemtoReg, ALUSrc, ALUOp, MemWrite, RegWrite, Jump, Ext_op, PctoReg}
+    `define SIGNAL {LS_bit, RegDst, Branch, MemtoReg, ALUSrc, ALUOp, MemWrite, RegWrite, Jump, Ext_op, PctoReg, JR}
     parameter T = 1'b1;
     parameter F = 1'b0;
 
@@ -78,8 +82,10 @@ module controller(
     always @(*) 
     begin
         if (opcode == opcode_is_RType)    // R type operation, use funct
-            `SIGNAL = {WORD, T, 2'b00, F, F, 4'b0010, F, T, F, F, F};
-        else
+            if (funct == 6'b001000)         // this the funct code of jr
+                `SIGNAL = {WORD, T, 2'b00, F, F, 4'b0010, F, T, F, F, F, T};
+            else 
+                `SIGNAL = {WORD, T, 2'b00, F, F, 4'b0010, F, T, F, F, F, F};        else
             case(opcode) 
         /*
                 About ALUOp of I type and J type:
@@ -93,29 +99,29 @@ module controller(
                 1010: use nor
                 1000: use slt
         */
-                opcode_is_BEQ   : `SIGNAL = {WORD, F, 2'b01, F, F, 4'b0001, F, F, F, F, F};
-                opcode_is_BNE   : `SIGNAL = {WORD, F, 2'b10, F, F, 4'b0001, F, F, F, F, F};
+                opcode_is_BEQ   : `SIGNAL = {WORD, F, 2'b01, F, F, 4'b0001, F, F, F, F, F, F};
+                opcode_is_BNE   : `SIGNAL = {WORD, F, 2'b10, F, F, 4'b0001, F, F, F, F, F, F};
 
-                opcode_is_ADDI  : `SIGNAL = {WORD, F, 2'b00, F, T, 4'b0000, F, T, F, F, F};
-                opcode_is_ADDIU : `SIGNAL = {WORD, F, 2'b00, F, T, 4'b0000, F, T, F, T, F};
-                opcode_is_ANDI  : `SIGNAL = {WORD, F, 2'b00, F, T, 4'b0101, F, T, F, F, F};
-                opcode_is_LUI   : `SIGNAL = {WORD, F, 2'b00, F, T, 4'b0011, F, T, F, F, F};
-                opcode_is_ORI   : `SIGNAL = {WORD, F, 2'b00, F, T, 4'b0100, F, T, F, F, F};
-                opcode_is_XORI  : `SIGNAL = {WORD, F, 2'b00, F, T, 4'b0110, F, T, F, F, F};
-                opcode_is_SLTI  : `SIGNAL = {WORD, F, 2'b00, F, T, 4'b1000, F, T, F, F, F};
-                opcode_is_SLTIU : `SIGNAL = {WORD, F, 2'b00, F, T, 4'b1000, F, T, F, T, F};
+                opcode_is_ADDI  : `SIGNAL = {WORD, F, 2'b00, F, T, 4'b0000, F, T, F, F, F, F};
+                opcode_is_ADDIU : `SIGNAL = {WORD, F, 2'b00, F, T, 4'b0000, F, T, F, T, F, F};
+                opcode_is_ANDI  : `SIGNAL = {WORD, F, 2'b00, F, T, 4'b0101, F, T, F, F, F, F};
+                opcode_is_LUI   : `SIGNAL = {WORD, F, 2'b00, F, T, 4'b0011, F, T, F, F, F, F};
+                opcode_is_ORI   : `SIGNAL = {WORD, F, 2'b00, F, T, 4'b0100, F, T, F, F, F, F};
+                opcode_is_XORI  : `SIGNAL = {WORD, F, 2'b00, F, T, 4'b0110, F, T, F, F, F, F};
+                opcode_is_SLTI  : `SIGNAL = {WORD, F, 2'b00, F, T, 4'b1000, F, T, F, F, F, F};
+                opcode_is_SLTIU : `SIGNAL = {WORD, F, 2'b00, F, T, 4'b1000, F, T, F, T, F, F};
                 
-                opcode_is_LW    : `SIGNAL = {WORD, F, 2'b00, T, T, 4'b0000, F, T, F, F, F};
-                opcode_is_LH    : `SIGNAL = {HALF, F, 2'b00, T, T, 4'b0000, F, T, F, F, F};
-                opcode_is_LHU   : `SIGNAL = {HALF, F, 2'b00, T, T, 4'b0000, F, T, F, T, F};
-                opcode_is_LB    : `SIGNAL = {BYTE, F, 2'b00, T, T, 4'b0000, F, T, F, F, F};
-                opcode_is_LBU   : `SIGNAL = {BYTE, F, 2'b00, T, T, 4'b0000, F, T, F, T, F};
-                opcode_is_SW    : `SIGNAL = {WORD, F, 2'b00, F, T, 4'b0000, T, F, F, F, F};
-                opcode_is_SH    : `SIGNAL = {HALF, F, 2'b00, F, T, 4'b0000, T, F, F, F, F};
-                opcode_is_SB    : `SIGNAL = {BYTE, F, 2'b00, F, T, 4'b0000, T, F, F, F, F};
+                opcode_is_LW    : `SIGNAL = {WORD, F, 2'b00, T, T, 4'b0000, F, T, F, F, F, F};
+                opcode_is_LH    : `SIGNAL = {HALF, F, 2'b00, T, T, 4'b0000, F, T, F, F, F, F};
+                opcode_is_LHU   : `SIGNAL = {HALF, F, 2'b00, T, T, 4'b0000, F, T, F, T, F, F};
+                opcode_is_LB    : `SIGNAL = {BYTE, F, 2'b00, T, T, 4'b0000, F, T, F, F, F, F};
+                opcode_is_LBU   : `SIGNAL = {BYTE, F, 2'b00, T, T, 4'b0000, F, T, F, T, F, F};
+                opcode_is_SW    : `SIGNAL = {WORD, F, 2'b00, F, T, 4'b0000, T, F, F, F, F, F};
+                opcode_is_SH    : `SIGNAL = {HALF, F, 2'b00, F, T, 4'b0000, T, F, F, F, F, F};
+                opcode_is_SB    : `SIGNAL = {BYTE, F, 2'b00, F, T, 4'b0000, T, F, F, F, F, F};
     
-                opcode_is_J     : `SIGNAL = {WORD, F, 2'b00, F, F, 4'b0000, F, F, T, F, F};
-                opcode_is_JAL   : `SIGNAL = {WORD, F, 2'b00, F, F, 4'b0000, F, T, T, F, T};
+                opcode_is_J     : `SIGNAL = {WORD, F, 2'b00, F, F, 4'b0000, F, F, T, F, F, F};
+                opcode_is_JAL   : `SIGNAL = {WORD, F, 2'b00, F, F, 4'b0000, F, T, T, F, T, F};
             endcase    
     end
 endmodule

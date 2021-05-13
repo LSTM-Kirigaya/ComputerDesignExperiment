@@ -18,6 +18,7 @@ module mips(clock, reset);
     wire           Jump;
     wire           Ext_op;
     wire           PctoReg;
+    wire           JR;
 
     wire   [31: 0] IF_ID_im_out;
 
@@ -33,6 +34,7 @@ module mips(clock, reset);
         .Jump(Jump),
         .Ext_op(Ext_op),
         .PctoReg(PctoReg),
+        .JR(JR),
 
         .clock(clock),
         .reset(reset),
@@ -42,6 +44,7 @@ module mips(clock, reset);
 
     controller Controller(
         .opcode(IF_ID_im_out[31:26]),
+        .funct(IF_ID_im_out[ 5: 0]),
         .LS_bit(LS_bit),
         .RegDst(RegDst),
         .Branch(Branch),
@@ -52,7 +55,8 @@ module mips(clock, reset);
         .RegWrite(RegWrite),
         .Jump(Jump),
         .Ext_op(Ext_op),
-        .PctoReg(PctoReg)
+        .PctoReg(PctoReg),
+        .JR(JR)
     );
     
 endmodule

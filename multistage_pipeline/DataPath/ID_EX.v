@@ -13,6 +13,7 @@ module ID_EX (
     Jump, 
     Ext_op,
     PctoReg,
+    JR,
     IF_ID_pc_add_out, 
     regfile_out1, 
     regfile_out2, 
@@ -29,6 +30,7 @@ module ID_EX (
     ID_EX_Jump,
     ID_EX_Ext_op,
     ID_EX_PctoReg,
+    ID_EX_JR,
     ID_EX_regfile_out1,    
     ID_EX_regfile_out2,
     ID_EX_pc_add_out,
@@ -51,6 +53,7 @@ module ID_EX (
     input               Jump;
     input               Ext_op;
     input               PctoReg;
+    input               JR;
     input       [31: 0] regfile_out1;        // input of regfile
     input       [31: 0] regfile_out2;
     input       [31: 0] IF_ID_pc_add_out;    // input of IF/ID
@@ -67,6 +70,7 @@ module ID_EX (
     output reg          ID_EX_Jump;
     output reg          ID_EX_Ext_op;
     output reg          ID_EX_PctoReg;
+    output reg          ID_EX_JR;
     output reg  [31: 0] ID_EX_regfile_out1;
     output reg  [31: 0] ID_EX_regfile_out2;
     output reg  [31: 0] ID_EX_pc_add_out;
@@ -89,6 +93,7 @@ module ID_EX (
         ID_EX_Jump              <=  Jump;
         ID_EX_Ext_op            <=  Ext_op;
         ID_EX_PctoReg           <=  PctoReg;
+        ID_EX_JR                <=  JR;
         ID_EX_regfile_out1      <=  regfile_out1;
         ID_EX_regfile_out2      <=  regfile_out2;
         ID_EX_pc_add_out        <=  IF_ID_pc_add_out;

@@ -26,6 +26,7 @@ module data_path(
     Jump, 
     Ext_op, 
     PctoReg,
+    JR,
 
     clock, 
     reset,
@@ -45,6 +46,7 @@ module data_path(
     input           Jump;
     input           Ext_op;
     input           PctoReg;
+    input           JR;
 
     input           clock;
     input           reset;
@@ -68,7 +70,6 @@ module data_path(
     wire    [31: 0] mux3_out;       // MEM WB
     wire    [31: 0] mux4_out;
     wire    [ 4: 0] mux5_out;
-    wire    [31: 0] mux6_out;
 
     wire    [ 3: 0] alu_ctrl_out;   // out of alu controller
     wire    [31: 0] alu_out;        // out of alu
@@ -90,6 +91,7 @@ module data_path(
     wire          ID_EX_Jump;
     wire          ID_EX_Ext_op;
     wire          ID_EX_PctoReg;
+    wire          ID_EX_JR;
     wire  [31: 0] ID_EX_regfile_out1;
     wire  [31: 0] ID_EX_regfile_out2;
     wire  [31: 0] ID_EX_pc_add_out;
@@ -102,12 +104,14 @@ module data_path(
     wire          EX_MEM_RegWrite;      
     wire          EX_MEM_Jump;
     wire          EX_MEM_Ext_op;        
-    wire          EX_MEM_PctoReg;       
+    wire          EX_MEM_PctoReg;   
+    wire          EX_MEM_JR;    
     wire  [31: 0] EX_MEM_branch_add_out;
     wire          EX_MEM_zero;
     wire  [31: 0] EX_MEM_pc_add_out;
     wire  [25: 0] EX_MEM_instr26;
     wire  [31: 0] EX_MEM_alu_out;
+    wire  [31: 0] EX_MEM_regfile_out1;
     wire  [31: 0] EX_MEM_regfile_out2;
     wire  [ 4: 0] EX_MEM_mux1_out;
 
@@ -135,10 +139,12 @@ module data_path(
     npc u_npc(
         .Jump(EX_MEM_Jump),
         .branch(EX_MEM_Branch),
+        .JR(EX_MEM_JR),
         .zero(EX_MEM_zero),
+        .pc_add_out(pc_add_out),
         .EX_MEM_branch_add_out(EX_MEM_branch_add_out),
-        .EX_MEM_pc_add_out(pc_add_out),
         .EX_MEM_instr26(EX_MEM_instr26),
+        .EX_MEM_regfile_out1(EX_MEM_regfile_out1),
         .NPC(NPC)
     );
 
@@ -186,6 +192,7 @@ module data_path(
         .Jump(Jump),
         .Ext_op(Ext_op),
         .PctoReg(PctoReg),
+        .JR(JR),
         .IF_ID_pc_add_out(IF_ID_pc_add_out),
         .regfile_out1(regfile_out1),
         .regfile_out2(regfile_out2),
@@ -202,6 +209,7 @@ module data_path(
         .ID_EX_Jump(ID_EX_Jump),
         .ID_EX_Ext_op(ID_EX_Ext_op),
         .ID_EX_PctoReg(ID_EX_PctoReg),
+        .ID_EX_JR(ID_EX_JR),
         .ID_EX_regfile_out1(ID_EX_regfile_out1),    
         .ID_EX_regfile_out2(ID_EX_regfile_out2),
         .ID_EX_pc_add_out(ID_EX_pc_add_out),
@@ -250,13 +258,6 @@ module data_path(
         .branch_add_out(branch_add_out)
     );
 
-    mux6 u_mux6(
-        .ID_EX_pc_add_out(ID_EX_pc_add_out),
-        .ID_EX_regfile_out1(ID_EX_regfile_out1),
-        .funct(ID_EX_instr26[5:0]),
-        .mux6_out(mux6_out)
-    );  
-
     // EX/MEM
     EX_MEM u_EX_MEM(
         .clock(clock),
@@ -270,12 +271,13 @@ module data_path(
         .Jump(ID_EX_Jump),
         .Ext_op(ID_EX_Ext_op),
         .PctoReg(ID_EX_PctoReg),
-
+        .JR(ID_EX_JR),
         .branch_add_out(branch_add_out),
         .zero(zero),
-        .ID_EX_pc_add_out(mux6_out),
+        .ID_EX_pc_add_out(ID_EX_pc_add_out),
         .ID_EX_instr26(ID_EX_instr26),
         .alu_out(alu_out),
+        .ID_EX_regfile_out1(ID_EX_regfile_out1),
         .ID_EX_regfile_out2(ID_EX_regfile_out2),
         .mux1_out(mux1_out),
 
@@ -287,11 +289,13 @@ module data_path(
         .EX_MEM_Jump(EX_MEM_Jump),
         .EX_MEM_Ext_op(EX_MEM_Ext_op),
         .EX_MEM_PctoReg(EX_MEM_PctoReg),
+        .EX_MEM_JR(EX_MEM_JR),
         .EX_MEM_branch_add_out(EX_MEM_branch_add_out),
         .EX_MEM_zero(EX_MEM_zero),
         .EX_MEM_pc_add_out(EX_MEM_pc_add_out),
         .EX_MEM_instr26(EX_MEM_instr26),
         .EX_MEM_alu_out(EX_MEM_alu_out),
+        .EX_MEM_regfile_out1(EX_MEM_regfile_out1),
         .EX_MEM_regfile_out2(EX_MEM_regfile_out2),
         .EX_MEM_mux1_out(EX_MEM_mux1_out)
     );
@@ -349,7 +353,7 @@ module data_path(
 
     mux5 u_mux5(
         .MEM_WB_mux1_out(MEM_WB_mux1_out),
-        .PctoReg(PctoReg),
+        .PctoReg(MEM_WB_PctoReg),
         .mux5_out(mux5_out)
     );
 
