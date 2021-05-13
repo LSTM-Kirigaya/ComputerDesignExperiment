@@ -7,7 +7,7 @@ addi   $t1, $zero, 1
 addi   $t1, $zero, 1
 addi   $t1, $zero, 1
 addi   $t1, $zero, 1
-beq    $s1, $s2,   test1    #not
+beq    $s1, $s2,   test1    # not
 addi   $t1, $zero, 2
 addi   $t1, $zero, 2
 addi   $t1, $zero, 2
@@ -16,7 +16,7 @@ back1:
 addi   $t1, $zero, 3
 addi   $t1, $zero, 3
 addi   $t1, $zero, 3
-beq    $s1, $s3,   test2 #yes
+beq    $s1, $s3,   test2    # yes
 addi   $t1, $zero, 3
 addi   $t1, $zero, 3
 addi   $t1, $zero, 3
@@ -25,7 +25,7 @@ back2:
 addi   $t1, $zero, 4
 addi   $t1, $zero, 4
 addi   $t1, $zero, 4
-bne    $s1, $s2,   test3 #yes
+bne    $s1, $s2,   test3    # yes
 addi   $t1, $zero, 4
 addi   $t1, $zero, 4
 addi   $t1, $zero, 4
@@ -34,7 +34,7 @@ back3:
 addi   $t1, $zero, 5
 addi   $t1, $zero, 5
 addi   $t1, $zero, 5
-bne    $s1, $s3,   test4 #no
+bne    $s1, $s3,   test4    # no
 addi   $t1, $zero, 5
 addi   $t1, $zero, 5
 addi   $t1, $zero, 5

@@ -19,3 +19,6 @@ lui     $zero, 0
 jaltest:
 addi    $s4,   $s1,   1
 j       back
+addi    $s1,   $s1,   0
+addi    $s1,   $s1,   0
+addi    $s1,   $s1,   0
