@@ -20,7 +20,7 @@ module dm_4k(
     reg        [15: 0] temp;
 
     initial 
-        $readmemh("./data/.data", dm, 0, 1023);  
+        $readmemh("./data/test_load_save_data", dm, 0, 1023);  
     
     // for LS_bit
     parameter WORD  = 2'b00;
@@ -50,12 +50,12 @@ module dm_4k(
             // $display("%d", EX_MEM_regfile_out2);
         end
 
-    // always @(dm[0] or dm[1] or dm[2] or dm[3] or dm[4] or dm[5])        // for debug
-    // begin
-    //     for (integer i = 0; i < 6; i = i + 1)
-    //         $write("%d", dm[i]);
-    //         $display(" ");
-    // end
+    always @(dm[0] or dm[1] or dm[2] or dm[3] or dm[4] or dm[5])        // for debug
+    begin
+        for (integer i = 0; i < 6; i = i + 1)
+            $write("%h ", dm[i]);
+            $display(" ");
+    end
     
     always @(*) 
     begin               // load data

@@ -21,7 +21,9 @@ multistage_pipeline
 
 ### 设计图纸(2021.5.13更新)
 
-![](./figure/五级流水线.png)
+![五级流水线](./figure/五级流水线.png)
+
+
 
 更新：
 
@@ -39,7 +41,7 @@ multistage_pipeline
 
 今天修复了一个关于JR指令的bug，原本的设计我还有点自鸣得意——在EX处直接使用一个比较器将ID_EX_pc_add_out和ID_EX_regfile_out1选择一个，选择的依据是ID_EX_instr26的后六位，也就是funct码是否为JR的funct码001000，是的话选择ID_EX_regfile_out1，它GPR[rs]，也就是JR要给PC的值，用它取代原本的pc_add_out，就可以改变PC了。但是这么做有一个致命的问题：如果输入的指令是I型指令，且其immediate位的数字正好是001000，那么PC就会被误改。
 
-
+所以嘛，最终我还是区服于为controller增加一个信号。
 
 
 

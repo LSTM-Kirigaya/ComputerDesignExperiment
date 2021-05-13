@@ -10,7 +10,7 @@ module test();
         clock <= 1;
         reset <= 1;
         #10 reset <= 0;
-        #6000 $finish;
+        #5000 $finish;
     end
 
     mips MIPS(
