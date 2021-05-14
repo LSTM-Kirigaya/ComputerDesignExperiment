@@ -7,9 +7,9 @@
 :vpi_module "D:\Download\iverilog\iverilog\lib\ivl\vhdl_textio.vpi";
 :vpi_module "D:\Download\iverilog\iverilog\lib\ivl\v2005_math.vpi";
 :vpi_module "D:\Download\iverilog\iverilog\lib\ivl\va_math.vpi";
-S_00000252c9932df0 .scope module, "hello" "hello" 2 1;
+S_000002a336ab2df0 .scope module, "hello" "hello" 2 1;
  .timescale 0 0;
-    .scope S_00000252c9932df0;
+    .scope S_000002a336ab2df0;
 T_0 ;
     %vpi_call 2 4 "$display", "Hello, World" {0 0 0};
     %vpi_call 2 5 "$finish" {0 0 0};
@@ -19,4 +19,4 @@ T_0 ;
 :file_names 3;
     "N/A";
     "<interactive>";
-    ".\hello.v";
+    "hello.v";
