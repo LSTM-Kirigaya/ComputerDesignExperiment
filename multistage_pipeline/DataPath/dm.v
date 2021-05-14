@@ -33,19 +33,29 @@ module dm_4k(
         if (MemWrite)               // save data
         begin
             case(LS_bit)
-                WORD : dm[EX_MEM_alu_out[11: 2]] = EX_MEM_regfile_out2[31: 0];
+                WORD : 
+                begin
+                    // $display("enter sw");
+                    dm[EX_MEM_alu_out[11: 2]] = EX_MEM_regfile_out2[31: 0];
+                end
                 HALF : 
-                case(EX_MEM_alu_out[1])              // ensure which half word in the whole word to process
+                begin
+                    case(EX_MEM_alu_out[1])              // ensure which half word in the whole word to process
                     1'b0  :  dm[EX_MEM_alu_out[11: 2]][15: 0] = EX_MEM_regfile_out2[15: 0];
                     1'b1  :  dm[EX_MEM_alu_out[11: 2]][31:16] = EX_MEM_regfile_out2[15: 0];
                 endcase
+                end
+                
                 BYTE : 
-                case(EX_MEM_alu_out[ 1: 0])
+                begin
+                    // $display("enter sh");
+                    case(EX_MEM_alu_out[ 1: 0])
                     2'b00 : dm[EX_MEM_alu_out[11: 2]][ 7: 0] = EX_MEM_regfile_out2[ 7: 0];
                     2'b01 : dm[EX_MEM_alu_out[11: 2]][15: 8] = EX_MEM_regfile_out2[ 7: 0];
                     2'b10 : dm[EX_MEM_alu_out[11: 2]][23:16] = EX_MEM_regfile_out2[ 7: 0];
                     2'b11 : dm[EX_MEM_alu_out[11: 2]][31:24] = EX_MEM_regfile_out2[ 7: 0];
                 endcase
+                end
             endcase
             // $display("%d", EX_MEM_regfile_out2);
         end
@@ -54,7 +64,7 @@ module dm_4k(
     begin
         for (integer i = 0; i < 6; i = i + 1)
             $write("%h ", dm[i]);
-            $display(" ");
+        $display(" ");
     end
     
     always @(*) 

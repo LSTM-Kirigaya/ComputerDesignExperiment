@@ -263,7 +263,7 @@ module data_path(
         .clock(clock),
         .reset(reset),
 
-        .LS_bit(LS_bit),
+        .LS_bit(ID_EX_LS_bit),
         .Branch(ID_EX_Branch),
         .MemtoReg(ID_EX_MemtoReg),
         .MemWrite(ID_EX_MemWrite),
