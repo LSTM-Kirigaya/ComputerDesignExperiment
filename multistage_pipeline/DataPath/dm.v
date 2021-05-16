@@ -27,8 +27,6 @@ module dm_4k(
     parameter HALF  = 2'b01;
     parameter BYTE  = 2'b10; 
 
-    
-
     always @(negedge clock) 
         if (MemWrite)               // save data
         begin
@@ -54,7 +52,7 @@ module dm_4k(
                     2'b01 : dm[EX_MEM_alu_out[11: 2]][15: 8] = EX_MEM_regfile_out2[ 7: 0];
                     2'b10 : dm[EX_MEM_alu_out[11: 2]][23:16] = EX_MEM_regfile_out2[ 7: 0];
                     2'b11 : dm[EX_MEM_alu_out[11: 2]][31:24] = EX_MEM_regfile_out2[ 7: 0];
-                endcase
+                    endcase
                 end
             endcase
             // $display("%d", EX_MEM_regfile_out2);

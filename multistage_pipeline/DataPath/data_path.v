@@ -175,7 +175,7 @@ module data_path(
         .regfile_out1(regfile_out1),
         .regfile_out2(regfile_out2)
     );
-
+    
     // ID/EX
     ID_EX u_ID_EX(
         .clock(clock),

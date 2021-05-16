@@ -6,7 +6,7 @@ module im_4k(pc, out_instr);
     reg     [31: 0]  im[1023: 0];    // all the instructions restored in IM
 
     initial 
-        $readmemh("./data/test_load_save_text", im, 0, 1023);    
+        $readmemh("./data/test_r_text", im, 0, 1023);    
 
     assign out_instr = im[pc[11:2]];
 
