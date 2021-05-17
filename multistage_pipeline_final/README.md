@@ -23,7 +23,7 @@ multistage_pipeline
 
 ### 设计图纸(2021.5.17更新)
 
-![](E:\Project\ComputerDesignExperiment\multistage_pipeline_final\figure\五级流水线.png)
+![](./figure/五级流水线.png)
 
 
 
