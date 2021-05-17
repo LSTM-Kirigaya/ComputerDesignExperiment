@@ -1,0 +1,41 @@
+# 五级流水线（带冒险和异常处理）
+
+### 项目结构
+
+```
+multistage_pipeline
+	|-> data:		 	IM和DM读入的地方
+	|-> figure:      	设计图纸，我高兴时可能会写写使用说明
+	|-> Python:		 	一些加速生产的脚本
+	|-> mips_code:   	用来测试的mips汇编源代码
+	|-> sim:		 	放激励文件的文件夹
+	|-> src
+		|-> Controller: 控制器
+		|-> DataPath:   数据通路
+		|-> Hazard:		旁路模块与冒险检测模块
+		|-> Pipe:		流水线寄存器
+		|-> Utils:		其余组件
+		|-> myCpu.v:	顶层模块
+	
+	|-> README.md:   	Current 
+	|-> .gitignore		上传文件过滤列表
+```
+
+### 设计图纸(2021.5.17更新)
+
+![](E:\Project\ComputerDesignExperiment\multistage_pipeline_final\figure\五级流水线.png)
+
+
+
+---
+
+## 日志
+
+### 2021.5.17
+
+从前两次的设计中，体会到一点：一个正确的，完备的思路对于一个不小的项目来说是多么的重要。因此，这次为了轻松愉悦的开发过程，我花了许久（6个小时左右）设计了最终带转发，冒险和异常检测的五级流水线图纸。并且吸取了部分DUAN学长的FPGA项目习惯。
+
+祝成功！
+
+
+
