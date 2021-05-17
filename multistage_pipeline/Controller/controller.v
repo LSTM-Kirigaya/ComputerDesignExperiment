@@ -56,7 +56,7 @@ module controller(
 
     // load and save
     parameter opcode_is_LW     = 6'b100011;
-    parameter opcode_is_LH     = 6'b100001;
+    parameter opcode_is_LH     = 6'b100001; 
     parameter opcode_is_LHU    = 6'b100101;
     parameter opcode_is_LB     = 6'b100000;
     parameter opcode_is_LBU    = 6'b100100;
