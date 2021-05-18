@@ -1,21 +1,46 @@
-module controller #(
-    // value to tell the difference between word, half word and btye
-    parameter NONE = 2'b00,
-    parameter WORD = 2'b01,
-    parameter HALF = 2'b10,
-    parameter BYTE = 2'b11,
-    // simple tag
-    parameter T    = 1'b1,
-    parameter F    = 1'b0,
-    // tag to distingush Branch
-    parameter BEQ    = 3'b000,              // branch equal
-    parameter BNE    = 3'b001,              // branch not equal 
-    parameter BGEZ   = 3'b010,              // branch greater than or equal to zero
-    parameter BGTZ   = 3'b011,              // branch greater than zero
-    parameter BLEZ   = 3'b100,              // branch less than or equal to zero
-    parameter BLTZ   = 3'b101,              // branch less than zero
-    parameter BGEZAL = 3'b110,              // branch greater than or equal to zero and link
-    parameter BLTZAL = 3'b111               // branch less than zero and link
+module controller #( 
+    /*
+        field of all one bit signal
+    */
+    parameter T          = 1'b1,
+    parameter F          = 1'b0,
+    /*
+        LS_bit field
+        value to tell the difference between word, half word and btye
+    */
+    parameter NONE       = 2'b00,
+    parameter WORD       = 2'b01,
+    parameter HALF       = 2'b10,
+    parameter BYTE       = 2'b11,    
+    /*
+        Branch field
+        tag to distinguish Branch
+    */
+    parameter BEQ        = 3'b000,              // branch equal
+    parameter BNE        = 3'b001,              // branch not equal 
+    parameter BGEZ       = 3'b010,              // branch greater than or equal to zero
+    parameter BGTZ       = 3'b011,              // branch greater than zero
+    parameter BLEZ       = 3'b100,              // branch less than or equal to zero
+    parameter BLTZ       = 3'b101,              // branch less than zero
+    parameter BGEZAL     = 3'b110,              // branch greater than or equal to zero and link
+    parameter BLTZAL     = 3'b111,              // branch less than zero and link
+    /*
+        RegDst field
+        tag to decide which register may be updated
+    */
+    parameter RT         = 3'b000,      
+    parameter RD         = 3'b001,
+    parameter RA         = 3'b010,
+    parameter HI         = 3'b011,
+    parameter LO         = 3'b100,
+    /*
+        DataDst field
+        tag to decide what may be wirtten to regfile
+    */
+    parameter ALU_OUT    = 2'b00,
+    parameter PC_ADD_OUT = 2'b01,
+    parameter HIGH_OUT = 
+
 )(
     input      [ 5: 0] opcode,
     input      [ 4: 0] rt,
@@ -74,6 +99,19 @@ module controller #(
     // J Type
     parameter opcode_is_J      = 6'b000010;
     parameter opcode_is_JAL    = 6'b000011;
+
+    /*
+        funct code field
+    */
+    parameter funct_is_JR      = 6'b001000;             // PC ← GPR[rs]                               rd :       data :                                       
+    parameter funct_is_SLLV    = 6'b000100;             // GPR[rd] ← GPR[rt] << GPR[rs] (logical)     rd : rd      data : alu                             
+    parameter funct_is_SRLV    = 6'b000110;             // GPR[rd] ← GPR[rt] >> GPR[rs] (logical)     rd : rd      data : alu                          
+    parameter funct_is_SRAV    = 6'b000111;             // GPR[rd] ← GPR[rt] >> GPR[rs] (arithmetic)  rd : rd      data : alu                             
+    parameter funct_is_MFHI    = 6'b010000;             // GPR[rd] ← HI                               rd : rd      data : high_out
+    parameter funct_is_MFLO    = 6'b010010;             // GPR[rd] ← LO                               rd : rd      data : low_out   
+    parameter funct_is_MTHI    = 6'b010001;             // HI ← GPR[rs]                               rd : 32      data : alu
+    parameter funct_is_MTLO    = 6'b010011;             // LO ← GPR[rs]                               rd : 33      data : alu
+    // MTHI & MTLO can be seen as HI ← GPR[rs] + 0
 
 
 
