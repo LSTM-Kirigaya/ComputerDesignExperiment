@@ -1,18 +1,18 @@
 module OR1 (
-    input  PcWrite1,
-    input  PcWrite2,
+    input  PcStall1,
+    input  PcStall2,
     output OR1_out 
 );
-    assign OR1_out = PcWrite1 | PcWrite2;
+    assign OR1_out = PcStall1 | PcStall2;
 
 endmodule //OR
 
 module OR2 (
-    input  IF_ID_Write1,
-    input  IF_ID_Write2,
+    input  IF_ID_Stall1,
+    input  IF_ID_Stall2,
     output OR2_out
 );
-    assign OR2_out = IF_ID_Write1 | IF_ID_Write2;
+    assign OR2_out = IF_ID_Stall1 | IF_ID_Stall2;
 
 endmodule //OR
 

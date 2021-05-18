@@ -11,7 +11,7 @@ module pc #(
     always @(posedge clock ,negedge reset) begin
         if (reset)
             pc_out <= initial_addr;
-        else if (OR1_out)
+        else if (!OR1_out)              // OR1_out represents stall or not
             pc_out <= npc_out;
     end
 
