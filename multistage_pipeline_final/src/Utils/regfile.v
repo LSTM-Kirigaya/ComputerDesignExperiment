@@ -4,8 +4,9 @@ module regfile (
     input              MEM_WB_RegWrite,
     input      [ 4: 0] rs,
     input      [ 4: 0] rt,                    
-    input      [ 4: 0] rd,                          
-    input      [31: 0] data,                        
+    input      [ 5: 0] MEM_WB_mux1_out, // rd      
+    input      [31: 0] mux6_out,        // data
+    input      [63: 0] MEM_WB_prod,     // prod               
     output reg [31: 0] low_out,
     output reg [31: 0] high_out,
     output reg [31: 0] regfile_out1,
@@ -22,7 +23,7 @@ module regfile (
     
     // load data from regfile
     always @(*) begin
-        #5              // half of the cycle
+        // half of the cycle
         assign high_out     = registers[32];
         assign low_out      = registers[33];
         assign regfile_out1 = (rs == 0) ? 0 : registers[rs];
@@ -30,10 +31,19 @@ module regfile (
     end
     
 
-    // Write data to regfile
+    // Write mux6_out to regfile
     always @(posedge clock or negedge reset) begin
-        if (MEM_WB_RegWrite && rd != 0)
-            registers[rd] = data;
+        if (MEM_WB_RegWrite && MEM_WB_mux1_out != 0)
+        begin
+            if (MEM_WB_mux1_out == 34)           // result of mult of div
+            begin
+                registers[32] = MEM_WB_prod[63:32];
+                registers[33] = MEM_WB_prod[31: 0];
+            end
+            else  
+                registers[MEM_WB_mux1_out] = mux6_out;
+        end
+            
         else if (reset)
             for (i = 0; i < 34; i = i + 1)
                 registers[i] = 0;

@@ -1,0 +1,18 @@
+$date
+	Wed May 19 16:19:32 2021
+$end
+$version
+	Icarus Verilog
+$end
+$timescale
+	1s
+$end
+$scope module hello $end
+$var reg 3 ! temp [2:0] $end
+$upscope $end
+$enddefinitions $end
+#10
+$dumpvars
+b1 !
+$end
+#6010

@@ -1,3 +1,5 @@
+
+
 module mux8 (
     input      [ 1: 0] Forward1A,
     input      [31: 0] regfile_out1,
@@ -30,3 +32,19 @@ module mux9 (
         endcase
     end
 endmodule // mux9
+
+
+module mux10 (
+    input               ShamtSrc,
+    input       [25: 0] ID_EX_instr26,
+    input       [ 4: 0] mux2_out,
+    output  reg [ 4: 0] mux10_out
+);
+    always @(*) begin
+        case (ShamtSrc)
+            1'b0 : mux10_out = ID_EX_instr26[10: 6];
+            1'b1 : mux10_out = mux2_out;
+        endcase
+    end
+
+endmodule // mux10
