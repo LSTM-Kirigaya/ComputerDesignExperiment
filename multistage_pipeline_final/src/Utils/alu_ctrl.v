@@ -34,7 +34,9 @@ module alu_ctrl #(
     parameter LUI_OP     = 5'b01110,
     parameter SLL_OP     = 5'b01111,
     parameter SRL_OP     = 5'b10000,
-    parameter SRA_OP     = 5'b10001                  
+    parameter SRA_OP     = 5'b10001,
+    parameter MTHI_OP    = 5'b10010,
+    parameter MTLO_OP    = 5'b10011                 
 )(
     input      [ 3: 0] ID_EX_ALUOp,
     input      [25: 0] ID_EX_instr26,          // funct extracted from this
@@ -64,6 +66,8 @@ module alu_ctrl #(
     parameter funct_is_SRLV   = 6'b000110; 
     parameter funct_is_SRA    = 6'b000011;
     parameter funct_is_SRAV   = 6'b000111; 
+    parameter funct_is_MTHI   = 6'b010001;
+    parameter funct_is_MTLO   = 6'b010011;  
 
 
     always @(*) begin
@@ -88,7 +92,9 @@ module alu_ctrl #(
                     funct_is_SRL    : alu_ctrl_out = SRL_OP;
                     funct_is_SRLV   : alu_ctrl_out = SRL_OP;
                     funct_is_SRA    : alu_ctrl_out = SRA_OP;
-                    funct_is_SRAV   : alu_ctrl_out = SRA_OP;    
+                    funct_is_SRAV   : alu_ctrl_out = SRA_OP; 
+                    funct_is_MTHI   : alu_ctrl_out = MTHI_OP;
+                    funct_is_MTLO   : alu_ctrl_out = MTLO_OP;   
                 endcase
             end
             USE_ADD   : alu_ctrl_out = ADD_OP;

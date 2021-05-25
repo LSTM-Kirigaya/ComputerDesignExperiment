@@ -41,6 +41,7 @@ module controller #(
     parameter RA         = 3'b010,              // to GPR[31]
     parameter HI         = 3'b011,              // to GPR[32]
     parameter LO         = 3'b100,              // to GPR[33]
+    parameter PROD       = 3'b101,              // to HI and LO 
     /*
         DataDst field
         tag to decide what may be wirtten to regfile
@@ -145,6 +146,10 @@ module controller #(
     /*
         funct code field
     */
+    parameter funct_is_MULT    = 6'b011000;
+    parameter funct_is_MULTU   = 6'b011001;
+    parameter funct_is_DIV     = 6'b011010;
+    parameter funct_is_DIVU    = 6'b011011;
     parameter funct_is_JR      = 6'b001000;             // PC ← GPR[rs]                               rd :       data :                                       
     parameter funct_is_SLLV    = 6'b000100;             // GPR[rd] ← GPR[rt] << GPR[rs] (logical)     rd : rd      data : alu                             
     parameter funct_is_SRLV    = 6'b000110;             // GPR[rd] ← GPR[rt] >> GPR[rs] (logical)     rd : rd      data : alu                          
@@ -161,15 +166,19 @@ module controller #(
         case (opcode)
             opcode_is_RType : begin
                 case (funct) 
-                    funct_is_JR   : `SIGNAL = {ID, NONE, RD, ALU_OUT , F, USE_R_TYPE, F, F, F, F, F, NO_EXC, NO_BRANCH, F, T};
-                    funct_is_SLLV : `SIGNAL = {EX, NONE, RD, ALU_OUT , F, USE_R_TYPE, F, F, T, T, F, NO_EXC, NO_BRANCH, F, F};
-                    funct_is_SRLV : `SIGNAL = {EX, NONE, RD, ALU_OUT , F, USE_R_TYPE, F, F, T, T, F, NO_EXC, NO_BRANCH, F, F};
-                    funct_is_SRAV : `SIGNAL = {EX, NONE, RD, ALU_OUT , F, USE_R_TYPE, F, F, T, T, F, NO_EXC, NO_BRANCH, F, F};
-                    funct_is_MFHI : `SIGNAL = {EX, NONE, RD, HIGH_OUT, F, USE_R_TYPE, F, F, F, T, F, NO_EXC, NO_BRANCH, F, F};
-                    funct_is_MFLO : `SIGNAL = {EX, NONE, RD, LOW_OUT , F, USE_R_TYPE, F, F, F, T, F, NO_EXC, NO_BRANCH, F, F};
-                    funct_is_MTHI : `SIGNAL = {EX, NONE, HI, ALU_OUT , F, USE_R_TYPE, F, F, F, T, F, NO_EXC, NO_BRANCH, F, F};
-                    funct_is_MTLO : `SIGNAL = {EX, NONE, LO, ALU_OUT , F, USE_R_TYPE, F, F, F, T, F, NO_EXC, NO_BRANCH, F, F};
-                    default       : `SIGNAL = {EX, NONE, RD, ALU_OUT , F, USE_R_TYPE, F, F, F, T, F, NO_EXC, NO_BRANCH, F, F};
+                    funct_is_MULT  : `SIGNAL = {EX, NONE, PROD, ALU_OUT , F, USE_R_TYPE, F, F, F, T, F, NO_EXC, NO_BRANCH, F, F};
+                    funct_is_MULTU : `SIGNAL = {EX, NONE, PROD, ALU_OUT , F, USE_R_TYPE, F, F, F, T, F, NO_EXC, NO_BRANCH, F, F};
+                    funct_is_DIV   : `SIGNAL = {EX, NONE, PROD, ALU_OUT , F, USE_R_TYPE, F, F, F, T, F, NO_EXC, NO_BRANCH, F, F};
+                    funct_is_DIVU  : `SIGNAL = {EX, NONE, PROD, ALU_OUT , F, USE_R_TYPE, F, F, F, T, F, NO_EXC, NO_BRANCH, F, F};
+                    funct_is_JR    : `SIGNAL = {ID, NONE, RD  , ALU_OUT , F, USE_R_TYPE, F, F, F, F, F, NO_EXC, NO_BRANCH, F, T};
+                    funct_is_SLLV  : `SIGNAL = {EX, NONE, RD  , ALU_OUT , F, USE_R_TYPE, F, F, T, T, F, NO_EXC, NO_BRANCH, F, F};
+                    funct_is_SRLV  : `SIGNAL = {EX, NONE, RD  , ALU_OUT , F, USE_R_TYPE, F, F, T, T, F, NO_EXC, NO_BRANCH, F, F};
+                    funct_is_SRAV  : `SIGNAL = {EX, NONE, RD  , ALU_OUT , F, USE_R_TYPE, F, F, T, T, F, NO_EXC, NO_BRANCH, F, F};
+                    funct_is_MFHI  : `SIGNAL = {EX, NONE, RD  , HIGH_OUT, F, USE_R_TYPE, F, F, F, T, F, NO_EXC, NO_BRANCH, F, F};
+                    funct_is_MFLO  : `SIGNAL = {EX, NONE, RD  , LOW_OUT , F, USE_R_TYPE, F, F, F, T, F, NO_EXC, NO_BRANCH, F, F};
+                    funct_is_MTHI  : `SIGNAL = {EX, NONE, HI  , ALU_OUT , F, USE_R_TYPE, F, F, F, T, F, NO_EXC, NO_BRANCH, F, F};
+                    funct_is_MTLO  : `SIGNAL = {EX, NONE, LO  , ALU_OUT , F, USE_R_TYPE, F, F, F, T, F, NO_EXC, NO_BRANCH, F, F};
+                    default        : `SIGNAL = {EX, NONE, RD  , ALU_OUT , F, USE_R_TYPE, F, F, F, T, F, NO_EXC, NO_BRANCH, F, F};
                 endcase
             end
             opcode_is_BEQ    : `SIGNAL = {ID, NONE, RD, ALU_OUT, F, USE_R_TYPE, F, F, F, F, T, NO_EXC, BEQ , F, F};

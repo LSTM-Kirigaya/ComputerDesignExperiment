@@ -37,8 +37,8 @@ module regfile (
         begin
             if (MEM_WB_mux1_out == 34)           // result of mult of div
             begin
-                registers[32] = MEM_WB_prod[63:32];
-                registers[33] = MEM_WB_prod[31: 0];
+                registers[32] = MEM_WB_prod[63:32];     // high
+                registers[33] = MEM_WB_prod[31: 0];     // low
             end
             else  
                 registers[MEM_WB_mux1_out] = mux6_out;
