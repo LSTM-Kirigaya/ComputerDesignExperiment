@@ -31,7 +31,7 @@ module controller #(
     parameter BLTZ       = 4'b0101,              // branch less than zero
     parameter BGEZAL     = 4'b0110,              // branch greater than or equal to zero and link
     parameter BLTZAL     = 4'b0111,              // branch less than zero and link
-    parameter NO_BRANCH  = 4'b1000,               // no branch
+    parameter NO_BRANCH  = 4'b1000,              // no branch
     /*
         RegDst field
         tag to decide which register may be updated
@@ -91,7 +91,7 @@ module controller #(
     output reg         RegWrite,
     output reg         Ext_op,                      // 1 : signed ext  0 : unsigned ext
     output reg [ 3: 0] ExcCode,
-    output reg [ 4: 0] Branch,
+    output reg [ 3: 0] Branch,
     output reg         Jump,
     output reg         Jr
 );

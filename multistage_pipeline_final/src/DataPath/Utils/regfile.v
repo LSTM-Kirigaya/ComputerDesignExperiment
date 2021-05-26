@@ -22,7 +22,7 @@ module regfile (
     integer        i;
     
     // load data from regfile
-    always @(*) begin
+    always @(negedge clock) begin           // we should load data in the latter half of the cycle in order to let update appear first
         // half of the cycle
         assign high_out     = registers[32];
         assign low_out      = registers[33];

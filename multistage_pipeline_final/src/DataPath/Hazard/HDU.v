@@ -21,8 +21,8 @@ module HDU1 (
     input               EX_MEM_MemWrite,
     input       [ 4: 0] rs,
     input       [ 4: 0] rt,
-    input       [ 4: 0] mux1_out,
-    input       [ 4: 0] EX_MEM_mux1_out,
+    input       [ 5: 0] mux1_out,
+    input       [ 5: 0] EX_MEM_mux1_out,
     output reg          PcStall1,
     output reg          IF_ID_Stall1,
     output reg          HDU1_block
@@ -50,7 +50,7 @@ module HDU2 (
     input               ID_EX_MemWrite,
     input       [ 4: 0] rs,
     input       [ 4: 0] rt,
-    input       [ 4: 0] mux1_out,
+    input       [ 5: 0] mux1_out,
     output reg          PcStall2,
     output reg          IF_ID_Stall2,
     output reg          HDU2_block

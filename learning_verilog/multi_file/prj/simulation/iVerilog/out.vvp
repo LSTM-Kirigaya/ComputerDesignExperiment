@@ -1,0 +1,57 @@
+#! /c/Source/iverilog-install/bin/vvp
+:ivl_version "12.0 (devel)" "(s20150603-1110-g18392a46)";
+:ivl_delay_selection "TYPICAL";
+:vpi_time_precision + 0;
+:vpi_module "D:\Download\iverilog\iverilog\lib\ivl\system.vpi";
+:vpi_module "D:\Download\iverilog\iverilog\lib\ivl\vhdl_sys.vpi";
+:vpi_module "D:\Download\iverilog\iverilog\lib\ivl\vhdl_textio.vpi";
+:vpi_module "D:\Download\iverilog\iverilog\lib\ivl\v2005_math.vpi";
+:vpi_module "D:\Download\iverilog\iverilog\lib\ivl\va_math.vpi";
+:vpi_module "D:\Download\iverilog\iverilog\lib\ivl\v2009.vpi";
+S_0000023393739c10 .scope package, "$unit" "$unit" 2 1;
+ .timescale 0 0;
+S_000002339373c7d0 .scope module, "main" "main" 3 1;
+ .timescale 0 0;
+v000002339373c3e0_0 .var "signal", 0 0;
+S_000002339373c960 .scope module, "u_v1" "v1" 3 7, 4 1 0, S_000002339373c7d0;
+ .timescale 0 0;
+    .port_info 0 /INPUT 1 "signal";
+v0000023393739da0_0 .net "signal", 0 0, v000002339373c3e0_0;  1 drivers
+S_000002339373caf0 .scope module, "u_v2" "v2" 3 11, 5 1 0, S_000002339373c7d0;
+ .timescale 0 0;
+    .port_info 0 /INPUT 1 "signal";
+v00000233938d6500_0 .net "signal", 0 0, v000002339373c3e0_0;  alias, 1 drivers
+S_00000233938a3470 .scope module, "u_v3" "v3" 3 15, 6 1 0, S_000002339373c7d0;
+ .timescale 0 0;
+    .port_info 0 /INPUT 1 "signal";
+v000002339373c340_0 .net "signal", 0 0, v000002339373c3e0_0;  alias, 1 drivers
+    .scope S_000002339373c960;
+T_0 ;
+    %vpi_call/w 4 3 "$display", "I am v1, signal=%d", v0000023393739da0_0 {0 0 0};
+    %end;
+    .thread T_0;
+    .scope S_000002339373caf0;
+T_1 ;
+    %vpi_call/w 5 3 "$display", "I am v2, signal=%d", v00000233938d6500_0 {0 0 0};
+    %end;
+    .thread T_1;
+    .scope S_00000233938a3470;
+T_2 ;
+    %vpi_call/w 6 3 "$display", "I am v3, signal=%d", v000002339373c340_0 {0 0 0};
+    %end;
+    .thread T_2;
+    .scope S_000002339373c7d0;
+T_3 ;
+    %pushi/vec4 1, 0, 1;
+    %store/vec4 v000002339373c3e0_0, 0, 1;
+    %end;
+    .thread T_3;
+# The file index is used to find the file name in the following table.
+:file_names 7;
+    "N/A";
+    "<interactive>";
+    "-";
+    "e:/Project/ComputerDesignExperiment/learning_verilog/multi_file/main.v";
+    "e:/Project/ComputerDesignExperiment/learning_verilog/multi_file/v1.v";
+    "e:/Project/ComputerDesignExperiment/learning_verilog/multi_file/v2.v";
+    "e:/Project/ComputerDesignExperiment/learning_verilog/multi_file/v3.v";

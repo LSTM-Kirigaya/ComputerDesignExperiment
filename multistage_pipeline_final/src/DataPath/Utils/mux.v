@@ -73,23 +73,35 @@ endmodule // mux4
 
 module mux5 (
     input      [ 2: 0] ID_EX_DataDst,
-    input      [31: 0] mux11_low_out,
-    input      [31: 0] mux11_high_out,
+    input      [31: 0] mux11_out,
+    input      [31: 0] mux12_out,
     input      [31: 0] ID_EX_pc_add_out,
     input      [31: 0] alu_out,
     output reg [31: 0] mux5_out
 );
     always @(*) begin
         case (ID_EX_DataDst)
-            3'b011 : mux5_out = mux11_low_out;
-            3'b010 : mux5_out = mux11_high_out;
+            3'b011 : mux5_out = mux11_out;
+            3'b010 : mux5_out = mux12_out;
             3'b001 : mux5_out = ID_EX_pc_add_out;
             3'b000 : mux5_out = alu_out;
         endcase
     end
 endmodule // mux5
 
-
+module mux6 (
+    input              MEM_WB_MemtoReg,
+    input      [31: 0] MEM_WB_dm_out,
+    input      [31: 0] MEM_WB_mux5_out,
+    output reg [31: 0] mux6_out
+);
+    always @(*) begin
+        if (MEM_WB_MemtoReg)
+            mux6_out = MEM_WB_dm_out;
+        else 
+            mux6_out = MEM_WB_mux5_out;
+    end
+endmodule // mux6
 
 module mux7 (
     input               OR3_out,
@@ -204,8 +216,8 @@ endmodule // mux10
 module mux11 (
     input      [ 2: 0] Forward3A,
     input      [31: 0] ID_EX_low_out,
-    input      [31: 0] EX_MEM_alu_out,
-    input      [31: 0] MEM_WB_alu_out,
+    input      [31: 0] EX_MEM_mux5_out,
+    input      [31: 0] MEM_WB_mux5_out,
     input      [63: 0] EX_MEM_prod,
     input      [63: 0] MEM_WB_prod,
     output reg [31: 0] mux11_out
@@ -215,8 +227,8 @@ module mux11 (
         case (Forward3A)
             3'b100 : mux11_out = EX_MEM_prod[31: 0];
             3'b011 : mux11_out = MEM_WB_prod[31: 0];
-            3'b010 : mux11_out = EX_MEM_alu_out;
-            3'b001 : mux11_out = MEM_WB_alu_out;
+            3'b010 : mux11_out = EX_MEM_mux5_out;
+            3'b001 : mux11_out = MEM_WB_mux5_out;
             3'b000 : mux11_out = ID_EX_low_out;
         endcase
     end
@@ -227,8 +239,8 @@ endmodule // mux11
 module mux12 (
     input      [ 2: 0] Forward3B,
     input      [31: 0] ID_EX_high_out,
-    input      [31: 0] EX_MEM_alu_out,
-    input      [31: 0] MEM_WB_alu_out,
+    input      [31: 0] EX_MEM_mux5_out,
+    input      [31: 0] MEM_WB_mux5_out,
     input      [63: 0] EX_MEM_prod,
     input      [63: 0] MEM_WB_prod,
     output reg [31: 0] mux12_out
@@ -237,8 +249,8 @@ module mux12 (
         case (Forward3B)
             3'b100 : mux12_out = EX_MEM_prod[63: 32];
             3'b011 : mux12_out = MEM_WB_prod[63: 32];
-            3'b010 : mux12_out = EX_MEM_alu_out;
-            3'b001 : mux12_out = MEM_WB_alu_out;
+            3'b010 : mux12_out = EX_MEM_mux5_out;
+            3'b001 : mux12_out = MEM_WB_mux5_out;
             3'b000 : mux12_out = ID_EX_high_out;
         endcase
     end

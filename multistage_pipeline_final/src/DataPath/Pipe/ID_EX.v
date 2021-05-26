@@ -18,7 +18,7 @@ module ID_EX (
     input       [31: 0] mux8_out,
     input       [31: 0] mux9_out,
     input       [31: 0] Ext_out,
-    input       [25: 0] IF_ID_im_out,
+    input       [31: 0] IF_ID_im_out,
 
     output reg  [ 1: 0] ID_EX_LS_bit,
     output reg  [ 2: 0] ID_EX_RegDst,

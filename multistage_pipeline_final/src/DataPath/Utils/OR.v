@@ -10,7 +10,7 @@ endmodule //OR
 module OR2 (
     input  IF_ID_Stall1,
     input  IF_ID_Stall2,
-    output OR2_out
+    output OR2_out  
 );
     assign OR2_out = IF_ID_Stall1 | IF_ID_Stall2;
 
