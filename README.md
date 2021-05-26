@@ -10,7 +10,7 @@ ComputerDesignExperiment
 	|-> multistage_pipeline_final:  五级流水线CPU，支持57条指令，支持冒险，转发，不支持冒险
 ```
 
-每个verilog项目都是用iverilog编译器进行多文件组织，不熟悉的同学可以参考我的知乎博客：https://zhuanlan.zhihu.com/p/367612172。
+每个verilog项目都是用iverilog编译器进行多文件组织，不熟悉的同学可以参考我的知乎博客：https://zhuanlan.zhihu.com/p/367612172
 
 其次，每个子项目都有自己的README，可以自行参考，了解项目结构。
 
