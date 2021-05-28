@@ -7,6 +7,21 @@ module MyCpu (
 );
 
     wire [31: 0] 	IF_ID_im_out;
+    wire         	use_stage;
+    wire [ 1: 0] 	LS_bit;
+    wire [ 2: 0] 	RegDst;
+    wire [ 2: 0] 	DataDst;
+    wire         	MemtoReg;
+    wire [ 3: 0] 	ALUOp;
+    wire         	MemWrite;
+    wire         	ALUSrc;
+    wire         	ShamtSrc;
+    wire         	RegWrite;
+    wire         	Ext_op;
+    wire [ 3: 0] 	ExcCode;
+    wire [ 3: 0] 	Branch;
+    wire         	Jump;
+    wire         	Jr;
 
     datapath u_datapath(
         //input
@@ -34,22 +49,6 @@ module MyCpu (
 
 
     // comtroller
-    wire         	use_stage;
-    wire [ 1: 0] 	LS_bit;
-    wire [ 2: 0] 	RegDst;
-    wire [ 2: 0] 	DataDst;
-    wire         	MemtoReg;
-    wire [ 3: 0] 	ALUOp;
-    wire         	MemWrite;
-    wire         	ALUSrc;
-    wire         	ShamtSrc;
-    wire         	RegWrite;
-    wire         	Ext_op;
-    wire [ 3: 0] 	ExcCode;
-    wire [ 3: 0] 	Branch;
-    wire         	Jump;
-    wire         	Jr;
-
     controller #(
         .T                		( 1'b1      		),
         .F                		( 1'b0      		),

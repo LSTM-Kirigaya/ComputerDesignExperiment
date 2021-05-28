@@ -43,6 +43,97 @@ module datapath (
         IF module
     */
     wire [31: 0] 	npc_out;
+    wire [31: 0] 	pc_out;
+    wire [31: 0] 	pc_add_out;
+    wire [31: 0] 	im_out;
+    wire   	        OR1_out;
+    wire   	        OR2_out;
+    wire   	        OR3_out;
+    wire        	OR4_out;
+    wire [31: 0] 	IF_ID_pc_add_out;
+    wire [31: 0] 	IF_ID_im_out;
+    wire   	        Skip_IF_Flush;
+    wire [31: 0] 	Ext_out;
+    wire   	        PcStall1;
+    wire   	        IF_ID_Stall1;
+    wire   	        HDU1_block;
+    wire   	        PcStall2;
+    wire   	        IF_ID_Stall2;
+    wire   	        HDU2_block;
+    wire [ 1: 0] 	mux7_LS_bit;
+    wire [ 2: 0] 	mux7_RegDst;
+    wire [ 2: 0] 	mux7_DataDst;
+    wire         	mux7_MemtoReg;
+    wire [ 3: 0] 	mux7_ALUOp;
+    wire         	mux7_MemWrite;
+    wire         	mux7_ALUSrc;
+    wire         	mux7_ShamtSrc;
+    wire         	mux7_RegWrite;
+    wire         	mux7_Ext_op;
+    wire [ 3: 0] 	mux7_ExcCode;
+    wire [31: 0] 	low_out;
+    wire [31: 0] 	high_out;
+    wire [31: 0] 	regfile_out1;
+    wire [31: 0] 	regfile_out2;
+    wire [31: 0] 	mux8_out;
+    wire [31: 0] 	mux9_out;
+    wire   	        BU_out;
+    wire [ 1: 0] 	Forward1A;
+    wire [ 1: 0] 	Forward1B;
+
+    wire [ 1: 0] 	ID_EX_LS_bit;
+    wire [ 2: 0] 	ID_EX_RegDst;
+    wire [ 2: 0] 	ID_EX_DataDst;
+    wire         	ID_EX_MemtoReg;
+    wire [ 3: 0] 	ID_EX_ALUOp;
+    wire         	ID_EX_MemWrite;
+    wire         	ID_EX_ALUSrc;
+    wire         	ID_EX_ShamtSrc;
+    wire         	ID_EX_RegWrite;
+    wire         	ID_EX_Ext_op;
+    wire [ 3: 0] 	ID_EX_ExcCode;
+    wire [31: 0] 	ID_EX_low_out;
+    wire [31: 0] 	ID_EX_high_out;
+    wire [31: 0] 	ID_EX_pc_add_out;
+    wire [31: 0] 	ID_EX_mux8_out;
+    wire [31: 0] 	ID_EX_mux9_out;
+    wire [31: 0] 	ID_EX_Ext_out;
+    wire [25: 0] 	ID_EX_instr26;
+
+    wire [31: 0] 	alu_out;
+    wire [63: 0] 	prod;
+    wire         	overflow;
+    wire         	divideZero;
+    wire [ 5: 0] 	mux1_out;
+    wire [ 2: 0] 	Forward3A;
+    wire [ 2: 0] 	Forward3B;
+    wire [31: 0] 	mux11_out;
+    wire [31: 0] 	mux12_out;
+    wire [31: 0] 	mux2_out;
+    wire [31: 0] 	mux3_out;
+    wire [31: 0] 	mux4_out;
+    wire [ 4: 0] 	alu_ctrl_out;
+    wire [ 4: 0] 	mux10_out;
+    wire [ 1: 0] 	Forward2A;
+    wire [ 1: 0] 	Forward2B;
+    wire [31: 0] 	mux5_out;
+    wire [ 1: 0] 	EX_MEM_LS_bit;
+    wire         	EX_MEM_MemtoReg;
+    wire         	EX_MEM_MemWrite;
+    wire         	EX_MEM_RegWrite;
+    wire         	EX_MEM_Ext_op;
+    wire [63: 0] 	EX_MEM_prod;
+    wire [31: 0] 	EX_MEM_mux5_out;
+    wire [31: 0] 	EX_MEM_mux3_out;
+    wire [ 5: 0] 	EX_MEM_mux1_out;
+    wire         	MEM_WB_MemtoReg;
+    wire         	MEM_WB_RegWrite;
+    wire [31: 0] 	MEM_WB_dm_out;
+    wire [31: 0] 	MEM_WB_mux5_out;
+    wire [ 5: 0] 	MEM_WB_mux1_out;
+    wire [63: 0] 	MEM_WB_prod;
+    wire [31: 0] 	mux6_out;
+
 
     npc u_npc(
         //input
@@ -58,7 +149,7 @@ module datapath (
         .npc_out      		( npc_out      		)
     );
 
-    wire [31: 0] 	pc_out;
+    
 
     pc #(
         .initial_addr 		( 32'h0000_3000 		))
@@ -73,7 +164,7 @@ module datapath (
         .pc_out  		( pc_out  		)
     );
 
-    wire [31: 0] 	pc_add_out;
+
 
     pc_add u_pc_add(
         //input
@@ -83,7 +174,7 @@ module datapath (
         .pc_add_out 		( pc_add_out 		)
     );
 
-    wire [31: 0] 	im_out;
+    
 
     im_8k u_im_8k(
         //input
@@ -95,7 +186,7 @@ module datapath (
         .im_out 		( im_out 		)
     );
 
-    wire   	OR1_out;
+    
 
     OR1 u_OR1(
         //input
@@ -106,7 +197,7 @@ module datapath (
         .OR1_out  		( OR1_out  		)
     );
 
-    wire   	OR2_out;
+    
 
     OR2 u_OR2(
         //input
@@ -120,8 +211,7 @@ module datapath (
     /*
         ID module
     */
-    wire [31: 0] 	IF_ID_pc_add_out;
-    wire [31: 0] 	IF_ID_im_out;
+    
 
     IF_ID #(
         .NOP 		( 32'h20080000                                  		))
@@ -139,7 +229,7 @@ module datapath (
         .IF_ID_im_out     		( IF_ID_im_out     		)
     );
 
-    wire   	OR3_out;
+    
 
     OR3 u_OR3(
         //input
@@ -151,7 +241,7 @@ module datapath (
         .OR3_out     		( OR3_out     		)
     );
 
-    wire   	OR4_out;
+    
 
     OR4 u_OR4(
         //input
@@ -162,7 +252,7 @@ module datapath (
         .OR4_out        		( OR4_out        		)
     );
 
-    wire   	Skip_IF_Flush;
+    
 
     FU u_FU(
         //input
@@ -174,7 +264,7 @@ module datapath (
         .Skip_IF_Flush 		( Skip_IF_Flush 		)
     );
 
-    wire [31: 0] 	Ext_out;
+    
 
     Ext u_Ext(
         //input
@@ -185,9 +275,7 @@ module datapath (
         .Ext_out      		( Ext_out      		)
     );
 
-    wire   	PcStall1;
-    wire   	IF_ID_Stall1;
-    wire   	HDU1_block;
+    
 
     HDU1 u_HDU1(
         //input
@@ -206,10 +294,7 @@ module datapath (
         .HDU1_block      		( HDU1_block      		)
     );
 
-    wire   	PcStall2;
-    wire   	IF_ID_Stall2;
-    wire   	HDU2_block;
-
+    
     HDU2 u_HDU2(
         //input
         .use_stage      		( use_stage      		),
@@ -225,17 +310,7 @@ module datapath (
         .HDU2_block     		( HDU2_block     		)
     );
 
-    wire [ 1: 0] 	mux7_LS_bit;
-    wire [ 2: 0] 	mux7_RegDst;
-    wire [ 2: 0] 	mux7_DataDst;
-    wire         	mux7_MemtoReg;
-    wire [ 3: 0] 	mux7_ALUOp;
-    wire         	mux7_MemWrite;
-    wire         	mux7_ALUSrc;
-    wire         	mux7_ShamtSrc;
-    wire         	mux7_RegWrite;
-    wire         	mux7_Ext_op;
-    wire [ 3: 0] 	mux7_ExcCode;
+    
 
     mux7 u_mux7(
         //input
@@ -266,10 +341,6 @@ module datapath (
         .mux7_ExcCode  		( mux7_ExcCode  		)
     );
 
-    wire [31: 0] 	low_out;
-    wire [31: 0] 	high_out;
-    wire [31: 0] 	regfile_out1;
-    wire [31: 0] 	regfile_out2;
 
     regfile u_regfile(
         //input
@@ -289,7 +360,7 @@ module datapath (
         .regfile_out2    		( regfile_out2    		)
     );
 
-    wire [31: 0] 	mux8_out;
+    
 
     mux8 u_mux8(
         //input
@@ -304,7 +375,7 @@ module datapath (
         //inout
     );
 
-    wire [31: 0] 	mux9_out;
+    
 
     mux9 u_mux9(
         //input
@@ -317,7 +388,7 @@ module datapath (
         .mux9_out        		( mux9_out        		)
     );
 
-    wire   	BU_out;
+    
 
     BU #(
         .BEQ       		( 4'b0000                            		),
@@ -340,9 +411,6 @@ module datapath (
     );
 
 
-    wire [ 1: 0] 	Forward1A;
-    wire [ 1: 0] 	Forward1B;
-
     ForwardUnit1 u_ForwardUnit1(
         //input
         .rs              		( IF_ID_im_out[25:21]  	),
@@ -358,25 +426,6 @@ module datapath (
     );
 
     // EX module
-    wire [ 1: 0] 	ID_EX_LS_bit;
-    wire [ 2: 0] 	ID_EX_RegDst;
-    wire [ 2: 0] 	ID_EX_DataDst;
-    wire         	ID_EX_MemtoReg;
-    wire [ 3: 0] 	ID_EX_ALUOp;
-    wire         	ID_EX_MemWrite;
-    wire         	ID_EX_ALUSrc;
-    wire         	ID_EX_ShamtSrc;
-    wire         	ID_EX_RegWrite;
-    wire         	ID_EX_Ext_op;
-    wire [ 3: 0] 	ID_EX_ExcCode;
-    wire [31: 0] 	ID_EX_low_out;
-    wire [31: 0] 	ID_EX_high_out;
-    wire [31: 0] 	ID_EX_pc_add_out;
-    wire [31: 0] 	ID_EX_mux8_out;
-    wire [31: 0] 	ID_EX_mux9_out;
-    wire [31: 0] 	ID_EX_Ext_out;
-    wire [25: 0] 	ID_EX_instr26;
-
     ID_EX u_ID_EX(
         //input
         .clock            		( clock            		),
@@ -421,8 +470,7 @@ module datapath (
         .ID_EX_instr26    		( ID_EX_instr26    		)
     );
 
-    wire [ 2: 0] 	Forward3A;
-    wire [ 2: 0] 	Forward3B;
+    
 
     ForwardUnit3 u_ForwardUnit3(
         //input
@@ -440,7 +488,7 @@ module datapath (
         //inout
     );
 
-    wire [31: 0] 	mux11_out;
+    
 
     mux11 u_mux11(
         //input
@@ -457,7 +505,7 @@ module datapath (
         //inout
     );
 
-    wire [31: 0] 	mux12_out;
+    
 
     mux12 u_mux12(
         //input
@@ -474,11 +522,6 @@ module datapath (
         //inout
     );
 
-
-
-
-    wire [31: 0] 	mux2_out;
-
     mux2 u_mux2(
         //input
         .Forward2A       		( Forward2A       		),
@@ -490,7 +533,6 @@ module datapath (
         .mux2_out        		( mux2_out        		)
     );
 
-    wire [31: 0] 	mux3_out;
 
     mux3 u_mux3(
         //input
@@ -503,8 +545,7 @@ module datapath (
         .mux3_out        		( mux3_out        		)
     );
 
-    wire [31: 0] 	mux4_out;
-
+    
     mux4 u_mux4(
         //input
         .ID_EX_ALUSrc  		( ID_EX_ALUSrc  		),
@@ -515,8 +556,7 @@ module datapath (
         .mux4_out      		( mux4_out      		)
     );
 
-    wire [ 4: 0] 	alu_ctrl_out;
-
+    
     alu_ctrl #(
         .USE_R_TYPE     		( 4'b0000                   		),
         .USE_ADD        		( 4'b0001                   		),
@@ -583,11 +623,6 @@ module datapath (
         //inout
     );
 
-    wire [31: 0] 	alu_out;
-    wire [63: 0] 	prod;
-    wire         	overflow;
-    wire         	divideZero;
-
     alu #(
         .ADD_OP   		( 5'b00000     		),
         .ADDU_OP  		( 5'b00001     		),
@@ -625,7 +660,7 @@ module datapath (
         .divideZero   		( divideZero   		)
     );
 
-    wire [ 5: 0] 	mux1_out;
+    
 
     mux1 #(
         .RT   		( 3'b000                                		),
@@ -643,7 +678,7 @@ module datapath (
         .mux1_out      		( mux1_out      		)
     );
 
-    wire [ 4: 0] 	mux10_out;
+    
 
     mux10 u_mux10(
         //input
@@ -655,8 +690,6 @@ module datapath (
         .mux10_out     		( mux10_out     		)
     );
 
-    wire [ 1: 0] 	Forward2A;
-    wire [ 1: 0] 	Forward2B;
 
     ForwardUnit2 u_ForwardUnit2(
         //input
@@ -672,7 +705,7 @@ module datapath (
         .Forward2B       		( Forward2B       		)
     );
 
-    wire [31: 0] 	mux5_out;
+    
 
     mux5 u_mux5(
         //input
@@ -689,15 +722,7 @@ module datapath (
     /*
         MEM module
     */
-    wire [ 1: 0] 	EX_MEM_LS_bit;
-    wire         	EX_MEM_MemtoReg;
-    wire         	EX_MEM_MemWrite;
-    wire         	EX_MEM_RegWrite;
-    wire         	EX_MEM_Ext_op;
-    wire [63: 0] 	EX_MEM_prod;
-    wire [31: 0] 	EX_MEM_mux5_out;
-    wire [31: 0] 	EX_MEM_mux3_out;
-    wire [ 5: 0] 	EX_MEM_mux1_out;
+    
 
     EX_MEM u_EX_MEM(
         //input
@@ -748,12 +773,7 @@ module datapath (
         .dm_out          		( dm_out          		)
     );
 
-    wire         	MEM_WB_MemtoReg;
-    wire         	MEM_WB_RegWrite;
-    wire [31: 0] 	MEM_WB_dm_out;
-    wire [31: 0] 	MEM_WB_mux5_out;
-    wire [ 5: 0] 	MEM_WB_mux1_out;
-    wire [63: 0] 	MEM_WB_prod;
+    
 
     MEM_WB u_MEM_WB(
         //input
@@ -775,8 +795,6 @@ module datapath (
         .MEM_WB_prod     		( MEM_WB_prod     		)
     );
 
-
-    wire [31: 0] 	mux6_out;
 
     mux6 u_mux6(
         //input
