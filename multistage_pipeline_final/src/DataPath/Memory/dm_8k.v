@@ -17,8 +17,9 @@ module dm_8k #(
     reg         [31: 0] dm[2048: 0];
     reg         [15: 0] temp;
 
-    always @(posedge clock or negedge reset) begin
-        $readmemh("./data/test_load_save_data", dm, 0, 2048);
+    always @(posedge clock or posedge reset) begin
+        $readmemh("./data/r_data", dm, 0, 0);
+        // TODO : change size of dm if there is load save command
     end
 
 

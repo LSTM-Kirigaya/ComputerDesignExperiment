@@ -18,21 +18,21 @@ module regfile (
         33   : $lo
     */
 
-    reg    [31: 0] registers[33: 0];
+    reg    [31: 0] registers[34: 0];
     integer        i;
     
     // load data from regfile
     always @(negedge clock) begin           // we should load data in the latter half of the cycle in order to let update appear first
         // half of the cycle
-        assign high_out     = registers[32];
-        assign low_out      = registers[33];
-        assign regfile_out1 = (rs == 0) ? 0 : registers[rs];
-        assign regfile_out2 = (rt == 0) ? 0 : registers[rt];
+        high_out     = registers[32];
+        low_out      = registers[33];
+        regfile_out1 = (rs == 0) ? 0 : registers[rs];
+        regfile_out2 = (rt == 0) ? 0 : registers[rt];
     end
     
 
     // Write mux6_out to regfile
-    always @(posedge clock or negedge reset) begin
+    always @(posedge clock or posedge reset) begin
         if (MEM_WB_RegWrite && MEM_WB_mux1_out != 0)
         begin
             if (MEM_WB_mux1_out == 34)           // result of mult of div

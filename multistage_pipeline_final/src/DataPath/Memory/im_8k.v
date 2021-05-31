@@ -6,8 +6,8 @@ module im_8k (
 );
     reg    [31: 0] im[2047: 0];             // instruction memory, which is an instruction pool
 
-    always @(posedge clock or negedge reset) begin
-        $readmemh("./data/test_r_text", im, 0, 2047);
+    always @(posedge clock or posedge reset) begin
+        $readmemh("./data/r_text", im, 0, 2047);
     end
 
     assign im_out = im[pc_out[11: 2]];

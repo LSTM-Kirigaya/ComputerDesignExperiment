@@ -15,6 +15,8 @@
 */
 
 module HDU1 (
+    input               clock,
+    input               reset,
     input               use_stage,
     input               ID_EX_RegWrite,
     input       [ 1: 0] EX_MEM_LS_bit,
@@ -28,6 +30,11 @@ module HDU1 (
     output reg          HDU1_block
 );
     `define TARGET {PcStall1, IF_ID_Stall1, HDU1_block}
+    // initial
+    always @(posedge reset) begin
+        `TARGET = {1'b0, 1'b0, 1'b0};
+    end
+
     // judge next level's alu or load
     always @(*) begin
         if (use_stage == 0 && ID_EX_RegWrite &&         // next level to the branch and jump
@@ -45,6 +52,8 @@ module HDU1 (
 endmodule // HDU1
 
 module HDU2 (
+    input               clock,
+    input               reset,
     input               use_stage,
     input       [ 1: 0] ID_EX_LS_bit,
     input               ID_EX_MemWrite,
@@ -56,6 +65,11 @@ module HDU2 (
     output reg          HDU2_block
 );
     `define TARGET  {PcStall2, IF_ID_Stall2, HDU2_block}
+
+    // initial 
+    always @(posedge reset) begin
+        `TARGET = {1'b0, 1'b0, 1'b0};
+    end
 
     // solve load-use conflict
     always @(*) begin

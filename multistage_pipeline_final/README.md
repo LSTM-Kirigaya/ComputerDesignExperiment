@@ -8,7 +8,7 @@ multistage_pipeline
 	|-> figure:      	设计图纸，我高兴时可能会写写使用说明
 	|-> Python:		 	一些加速生产的脚本
 	|-> mips_code:   	用来测试的mips汇编源代码
-	|-> sim:		 	放激励文件的文件夹
+	|-> sim:		    放激励文件的文件夹
 	|-> src
 		|-> Controller: 控制器
 		|-> DataPath:   数据通路
@@ -56,4 +56,28 @@ multistage_pipeline
 ### 2021.5.26
 
 中间事情真的很多，所以只能断断续续地更新了。在我的想法下，今天完成了57条指令的全数据通路和控制器的连接，接下来就只剩调试了。有时间我得将已经被我改得面目全非的设计图纸的visio原文件修改同步更新一下了。
+
+### 2021.5.30
+
+开始进行整体测试，今天先测试所有的R型指令，遇到了pc启动的问题，我将reset设置为了上升沿，并且将`pc.v`修改如下：
+
+```verilog
+    // initial 
+    always @(posedge reset) begin
+        pc_out <= initial_addr;
+    end
+
+    always @(posedge clock && reset == 1) begin
+        if (!OR1_out)              // OR1_out represents stall or not
+            pc_out <= npc_out;
+    end
+```
+
+也就是将初始化和持续更新分开来。
+
+除此之外，用来用来软堵塞pc的`OR1_out`和`OR2_out`一开始都是x，会使得pc在启动时不更新，所以需要对两个冒险模块初始化其输出信号，使得一开始输出的都是不堵塞的信号。
+
+
+
+
 

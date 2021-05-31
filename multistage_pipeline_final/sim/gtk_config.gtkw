@@ -1,0 +1,55 @@
+[*]
+[*] GTKWave Analyzer v3.3.86 (w)1999-2017 BSI
+[*] Sun May 30 17:01:27 2021
+[*]
+[dumpfile] "/home/tianbot/project/ComputerDesignExperiment/multistage_pipeline_final/sim/wave.vcd"
+[dumpfile_mtime] "Sun May 30 16:47:55 2021"
+[dumpfile_size] 94755
+[savefile] "/home/tianbot/project/ComputerDesignExperiment/multistage_pipeline_final/sim/gtk_config.gtkw"
+[timestart] 9
+[size] 1400 674
+[pos] -25 -22
+*-6.186769 189 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] testBench.
+[treeopen] testBench.u_MyCpu.
+[sst_width] 243
+[signals_width] 283
+[sst_expanded] 1
+[sst_vpaned_height] 269
+@200
+-Global
+@28
+testBench.clock
+@200
+-IF
+@22
+testBench.u_MyCpu.u_datapath.pc_out[31:0]
+testBench.u_MyCpu.u_datapath.im_out[31:0]
+@200
+-ID
+@23
+testBench.u_MyCpu.u_datapath.IF_ID_im_out[31:0]
+@22
+testBench.u_MyCpu.u_datapath.regfile_out2[31:0]
+testBench.u_MyCpu.u_datapath.mux9_out[31:0]
+@200
+-EX
+@22
+testBench.u_MyCpu.u_datapath.ID_EX_instr26[25:0]
+testBench.u_MyCpu.u_datapath.mux1_out[5:0]
+testBench.u_MyCpu.u_datapath.mux2_out[31:0]
+testBench.u_MyCpu.u_datapath.mux3_out[31:0]
+[color] 4
+testBench.u_MyCpu.u_datapath.mux4_out[31:0]
+@200
+-WB
+@22
+testBench.u_MyCpu.u_datapath.u_regfile.mux6_out[31:0]
+testBench.u_MyCpu.u_datapath.MEM_WB_mux1_out[5:0]
+@200
+-stall
+@28
+testBench.u_MyCpu.u_datapath.OR1_out
+testBench.u_MyCpu.u_datapath.OR2_out
+[pattern_trace] 1
+[pattern_trace] 0

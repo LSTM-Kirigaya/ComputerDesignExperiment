@@ -35,7 +35,7 @@ module alu #(
     output reg         divideZero
 );
     reg [32: 0] temp; 
-    always @(posedge clock or negedge reset) begin
+    always @(posedge clock or posedge reset) begin
         overflow <= 0;
         divideZero <= 0;
     end

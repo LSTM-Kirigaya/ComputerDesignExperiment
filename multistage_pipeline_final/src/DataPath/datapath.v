@@ -97,6 +97,7 @@ module datapath (
     wire [31: 0] 	ID_EX_pc_add_out;
     wire [31: 0] 	ID_EX_mux8_out;
     wire [31: 0] 	ID_EX_mux9_out;
+    
     wire [31: 0] 	ID_EX_Ext_out;
     wire [25: 0] 	ID_EX_instr26;
 
@@ -133,6 +134,7 @@ module datapath (
     wire [ 5: 0] 	MEM_WB_mux1_out;
     wire [63: 0] 	MEM_WB_prod;
     wire [31: 0] 	mux6_out;
+
 
 
     npc u_npc(
@@ -279,6 +281,8 @@ module datapath (
 
     HDU1 u_HDU1(
         //input
+        .clock                  ( clock                 ),
+        .reset                  ( reset                 ),
         .use_stage       		( use_stage       		),
         .ID_EX_RegWrite  		( ID_EX_RegWrite  		),
         .EX_MEM_LS_bit   		( EX_MEM_LS_bit   		),
@@ -297,6 +301,8 @@ module datapath (
     
     HDU2 u_HDU2(
         //input
+        .clock                  ( clock                 ),
+        .reset                  ( reset                 ),
         .use_stage      		( use_stage      		),
         .ID_EX_LS_bit   		( ID_EX_LS_bit   		),
         .ID_EX_MemWrite 		( ID_EX_MemWrite 		),
@@ -447,7 +453,7 @@ module datapath (
         .mux8_out         		( mux8_out         		),
         .mux9_out         		( mux9_out         		),
         .Ext_out          		( Ext_out          		),
-        .IF_ID_im_out     		( IF_ID_im_out     		),
+        .instr26     		    ( IF_ID_im_out[25: 0]   ),
 
         //output
         .ID_EX_LS_bit     		( ID_EX_LS_bit     		),
