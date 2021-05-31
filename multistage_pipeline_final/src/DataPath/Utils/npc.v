@@ -19,7 +19,7 @@ module npc (
             npc_out = {PC[31:28], {IF_ID_im_out[25: 0] << 2}};
         end
         else if (BU_out) begin
-            npc_out = (Ext_out << 2) + pc_add_out;
+            npc_out = (Ext_out << 2) + pc_add_out - 4;
         end
         else begin
             npc_out = pc_add_out;

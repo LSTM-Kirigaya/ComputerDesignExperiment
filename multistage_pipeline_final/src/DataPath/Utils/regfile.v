@@ -30,9 +30,13 @@ module regfile (
         regfile_out2 = (rt == 0) ? 0 : registers[rt];
     end
     
+    always @(posedge reset) begin
+        for (i = 0; i < 34; i = i + 1)
+            registers[i] = 0;
+    end
 
     // Write mux6_out to regfile
-    always @(posedge clock or posedge reset) begin
+    always @(posedge clock) begin
         if (MEM_WB_RegWrite && MEM_WB_mux1_out != 0)
         begin
             if (MEM_WB_mux1_out == 34)           // result of mult of div
@@ -42,11 +46,7 @@ module regfile (
             end
             else  
                 registers[MEM_WB_mux1_out] = mux6_out;
-        end
-            
-        else if (reset)
-            for (i = 0; i < 34; i = i + 1)
-                registers[i] = 0;
+        end            
     end
     
 endmodule //regfile

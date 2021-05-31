@@ -16,15 +16,14 @@ module IF_ID #(
     */
     always @(posedge clock) 
     begin
-        if (OR4_out)
-            IF_ID_im_out = NOP;         // use NOP to flush and the pc_add_out won't be used later, so we don't care about pc_add_out there
-        
-        else if (!OR2_out)               // update iff IF_ID_Write
+        if (!OR2_out)                // update iff IF_ID_Write
         begin
-            IF_ID_im_out = im_out;
+            if (OR4_out)
+                IF_ID_im_out = NOP;  // use NOP to flush and the pc_add_out won't be used later, so we don't care about pc_add_out there
+            else
+                IF_ID_im_out = im_out;
             IF_ID_pc_add_out = pc_add_out;
         end
     end
-
 
 endmodule //IF_ID

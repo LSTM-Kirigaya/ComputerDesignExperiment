@@ -77,7 +77,41 @@ multistage_pipeline
 
 除此之外，用来用来软堵塞pc的`OR1_out`和`OR2_out`一开始都是x，会使得pc在启动时不更新，所以需要对两个冒险模块初始化其输出信号，使得一开始输出的都是不堵塞的信号。
 
+### 2021.5.31
+
+5月的最后一天，我已经完成了所有R型指令的测试、旁路测试和冒险测试。debug过程中发现一个问题：和之前一样，尽量别写形如`posedge clock or posedge reset`，请把初始化的always块另外写，因为我这边默认是reset上升沿触发模块的初始化操作，但是如果你将reset信号与别的信号混在一起写，就会导致模块永远处于更新状态，对于我的`regfile`，这意味着，每当后续的上升沿来临时，寄存器堆中所有的寄存器都会清零。
+
+**第二个值得记载的bug**就是有关branch类型指令的问题，在pro1和pro2中的branch信号中，我最终的目标地址是通过branch当前的相对位移`>>2`和基地址相加得到的，但是pro3在我的设计中，branch在ID阶段得到的`pc_add_out`是当前IF阶段的`pc_add_out`，而不是随着当前这条branch指令得到的。因此在使用branch跳转时使用的`pc_add_out`必须减四才能正确。
 
 
+**第三个值得记载的bug**
 
+```verilog
+    always @(posedge clock) 
+    begin
+        if (OR4_out)
+            IF_ID_im_out = NOP;         // use NOP to flush and the pc_add_out won't be used later, so we don't care about pc_add_out there
+        
+        else if (!OR2_out)               // update iff IF_ID_Write
+        begin
+            IF_ID_im_out = im_out;
+            IF_ID_pc_add_out = pc_add_out;
+        end
+    end
+```
 
+更改之后
+
+```verilog
+    always @(posedge clock) 
+    begin
+        if (!OR2_out)                // update iff IF_ID_Write
+        begin
+            if (OR4_out)
+                IF_ID_im_out = NOP;  // use NOP to flush and the pc_add_out won't be used later, so we don't care about pc_add_out there
+            else
+                IF_ID_im_out = im_out;
+            IF_ID_pc_add_out = pc_add_out;
+        end
+    end
+```

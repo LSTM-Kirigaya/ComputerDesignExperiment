@@ -14,17 +14,19 @@ module BU #(
     input      [31: 0] mux9_out,
     output reg         BU_out
 );
+
+
     always @(*) begin
         case(Branch)
             BEQ       : BU_out = (mux8_out == mux9_out) ? 1 : 0;
             BNE       : BU_out = (mux8_out == mux9_out) ? 0 : 1;
-            BGEZ      : BU_out = (mux8_out > 0 || mux8_out == 0) ? 1 : 0;
-            BGTZ      : BU_out = (mux8_out > 0) ? 1 : 0;
-            BLEZ      : BU_out = (mux8_out < 0 || mux8_out == 0) ? 1 : 0;
-            BLTZ      : BU_out = (mux8_out < 0) ? 1 : 0;
+            BGEZ      : BU_out = ($signed(mux8_out) > 0 || mux8_out == 0) ? 1 : 0;
+            BGTZ      : BU_out = ($signed(mux8_out) > 0) ? 1 : 0;
+            BLEZ      : BU_out = ($signed(mux8_out) < 0 || mux8_out == 0) ? 1 : 0;
+            BLTZ      : BU_out = ($signed(mux8_out) < 0) ? 1 : 0;
             // part of link will be thrown to cooperation of controller, pc_add_out and mux5
-            BGEZAL    : BU_out = (mux8_out > 0 || mux8_out == 0) ? 1 : 0;
-            BLTZAL    : BU_out = (mux8_out < 0) ? 1 : 0;
+            BGEZAL    : BU_out = ($signed(mux8_out) > 0 || mux8_out == 0) ? 1 : 0;
+            BLTZAL    : BU_out = ($signed(mux8_out) < 0) ? 1 : 0;
             NO_BRANCH : BU_out = 0;
         endcase
     end

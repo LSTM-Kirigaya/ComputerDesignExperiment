@@ -195,9 +195,9 @@ module controller #(
             end
 
             opcode_is_ADDI   : `SIGNAL = {EX, NONE, RT, ALU_OUT, F, USE_ADD , F, T, F, T, T, NO_EXC, NO_BRANCH, F, F};
-            opcode_is_ADDIU  : `SIGNAL = {EX, NONE, RT, ALU_OUT, F, USE_ADDU, F, T, F, T, F, NO_EXC, NO_BRANCH, F, F};
+            opcode_is_ADDIU  : `SIGNAL = {EX, NONE, RT, ALU_OUT, F, USE_ADDU, F, T, F, T, T, NO_EXC, NO_BRANCH, F, F};
             opcode_is_SLTI   : `SIGNAL = {EX, NONE, RT, ALU_OUT, F, USE_SLT , F, T, F, T, T, NO_EXC, NO_BRANCH, F, F};
-            opcode_is_SLTIU  : `SIGNAL = {EX, NONE, RT, ALU_OUT, F, USE_SLTU, F, T, F, T, F, NO_EXC, NO_BRANCH, F, F};
+            opcode_is_SLTIU  : `SIGNAL = {EX, NONE, RT, ALU_OUT, F, USE_SLTU, F, T, F, T, T, NO_EXC, NO_BRANCH, F, F};
             opcode_is_ANDI   : `SIGNAL = {EX, NONE, RT, ALU_OUT, F, USE_AND , F, T, F, T, F, NO_EXC, NO_BRANCH, F, F};
             opcode_is_ORI    : `SIGNAL = {EX, NONE, RT, ALU_OUT, F, USE_OR  , F, T, F, T, F, NO_EXC, NO_BRANCH, F, F};
             opcode_is_XORI   : `SIGNAL = {EX, NONE, RT, ALU_OUT, F, USE_XOR , F, T, F, T, F, NO_EXC, NO_BRANCH, F, F};        

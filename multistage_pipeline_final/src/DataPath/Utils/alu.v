@@ -80,7 +80,7 @@ module alu #(
                 divideZero = 0;
             end
             SLT_OP : begin
-                if (op1 < op2)
+                if ($signed(op1) < $signed(op2))
                     alu_out = 1;
                 else 
                     alu_out = 0;

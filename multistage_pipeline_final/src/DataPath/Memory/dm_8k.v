@@ -17,26 +17,31 @@ module dm_8k #(
     reg         [31: 0] dm[2048: 0];
     reg         [15: 0] temp;
 
-    always @(posedge clock or posedge reset) begin
-        $readmemh("./data/r_data", dm, 0, 0);
+    always @(posedge reset) begin
+        $readmemh("./data/r_data", dm, 0, 2048);
         // TODO : change size of dm if there is load save command
     end
 
+    reg         [31: 0] debug_save;
+    reg         [31: 0] debug_load;
 
     // save word if MemWrite
     always @(*) begin      
         if (EX_MEM_MemWrite && EX_MEM_LS_bit != NONE) begin
             case (EX_MEM_LS_bit)
                 WORD : begin
+                    debug_save = EX_MEM_mux3_out;
                     dm[EX_MEM_mux5_out[11: 2]] = EX_MEM_mux3_out;
                 end
                 HALF : begin
+                    debug_save = EX_MEM_mux3_out[15: 0];
                     case (EX_MEM_mux5_out[1])
                         1'b0 : dm[EX_MEM_mux5_out[11: 2]][15: 0] = EX_MEM_mux3_out[15: 0];
                         1'b1 : dm[EX_MEM_mux5_out[11: 2]][31:16] = EX_MEM_mux3_out[15: 0];
                     endcase
                 end
                 BYTE : begin
+                    debug_save = EX_MEM_mux3_out[ 7: 0];
                     case (EX_MEM_mux5_out[ 1: 0])
                         2'b00 : dm[EX_MEM_mux5_out[11: 2]][ 7: 0] = EX_MEM_mux3_out[ 7: 0];
                         2'b01 : dm[EX_MEM_mux5_out[11: 2]][15: 8] = EX_MEM_mux3_out[ 7: 0];
@@ -53,6 +58,7 @@ module dm_8k #(
         if (!EX_MEM_MemWrite && EX_MEM_LS_bit != NONE) begin
             case (EX_MEM_LS_bit)
                 WORD : begin
+                    debug_load = EX_MEM_mux5_out[11: 2];
                     dm_out = dm[EX_MEM_mux5_out[11: 2]];
                 end
                 HALF : begin

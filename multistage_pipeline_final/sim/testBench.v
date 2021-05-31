@@ -10,7 +10,7 @@ module testBench();
         clock = 0;
         reset = 0;
         #20 reset = ~reset;
-        #6000 $finish;    
+        #3000 $finish;    
     end
 
     MyCpu u_MyCpu(
