@@ -45,7 +45,7 @@ module alu #(
             // 1. add with overflow detection
             ADD_OP  : begin
                 temp = {op1[31], op1} + {op2[31], op2};
-                if (temp[32:0] == temp[31:0])
+                if (temp[32:0] == {temp[31], temp[31:0]})
                 begin
                     alu_out = temp;
                     overflow = 1'b0;
@@ -63,7 +63,7 @@ module alu #(
             // 3. sub with overflow detection
             SUB_OP : begin
                 temp = {op1[31], op1} - {op2[31], op2};
-                if (temp[32:0] == temp[31:0])
+                if (temp[32:0] == {temp[31],temp[31:0]})
                 begin
                     alu_out = temp;
                     overflow = 1'b0;
