@@ -1,0 +1,5 @@
+    parameter ALU_OUT    = 3'b000,
+    parameter PC_ADD_OUT = 3'b001,
+    parameter HIGH_OUT   = 3'b010,
+    parameter LOW_OUT    = 3'b011,
+    parameter CP0_OUT    = 3'b100, 

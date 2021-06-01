@@ -25,6 +25,14 @@ module dm_8k #(
     reg         [31: 0] debug_save;
     reg         [31: 0] debug_load;
 
+    wire         [31: 0] n1;
+    wire         [31: 0] n2;
+    wire         [31: 0] n3;
+    wire         [31: 0] n4;
+    wire         [31: 0] n5;
+    wire         [31: 0] n6;
+
+
     // save word if MemWrite
     always @(*) begin      
         if (EX_MEM_MemWrite && EX_MEM_LS_bit != NONE) begin
@@ -87,6 +95,13 @@ module dm_8k #(
                 end
             endcase
         end
+    end
+
+    always @(dm[0] or dm[1] or dm[2] or dm[3] or dm[4] or dm[5])        // for debug
+    begin
+        for (integer i = 0; i < 6; i = i + 1)
+            $write("%d", dm[i]);
+            $display(" ");
     end
 
 endmodule // dm_8k
